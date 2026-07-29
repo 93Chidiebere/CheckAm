@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "VeriNote - Real-Time Fact Checker",
+  "version": "1.0",
+  "description": "Scans articles and social media feeds, highlighting claims and overlaying real-time community notes.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

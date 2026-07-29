@@ -1,0 +1,78 @@
+[
+  {
+    "id": "claim_ng_001",
+    "claim": "Nigeria's external reserves increased by $10 billion in the last six months.",
+    "status": "False",
+    "consensus": 0,
+    "votesHelpful": 0,
+    "votesNotHelpful": 0,
+    "explanation": "Central Bank of Nigeria (CBN) data shows that external reserves fluctuated between $34 billion and $36 billion, indicating a net change of less than $2 billion, largely driven by debt service payments and foreign exchange interventions.",
+    "citations": [
+      {
+        "title": "Dubawa: Fact-checking claims on Nigeria's external reserves",
+        "url": "https://dubawa.org/fact-checking-nigerias-reserves"
+      },
+      {
+        "title": "Central Bank of Nigeria: Movement in Foreign Reserves",
+        "url": "https://www.cbn.gov.ng/IntOps/Reserve.asp"
+      }
+    ]
+  },
+  {
+    "id": "claim_ng_002",
+    "claim": "The government has fully eliminated the fuel subsidy, saving 2 trillion Naira.",
+    "status": "Misleading",
+    "consensus": 0,
+    "votesHelpful": 0,
+    "votesNotHelpful": 0,
+    "explanation": "While the official subsidy budget line was removed, reports from the IMF and the National Petroleum Company (NNPC) show that the government continues to pay 'under-recovery' costs to cap retail fuel prices, amounting to indirect subsidies.",
+    "citations": [
+      {
+        "title": "Premium Times: The truth about Nigeria's ongoing fuel subsidy payments",
+        "url": "https://www.premiumtimesng.com/news/top-news/698712-investigation-fuel-subsidy-by-another-name.html"
+      },
+      {
+        "title": "FactCheckHub: Did Nigeria completely stop paying fuel subsidies?",
+        "url": "https://factcheckhub.com/did-nigeria-stop-fuel-subsidies/"
+      }
+    ]
+  },
+  {
+    "id": "claim_ng_003",
+    "claim": "Nigeria's inflation rate dropped to 12% in the second quarter.",
+    "status": "False",
+    "consensus": 0,
+    "votesHelpful": 0,
+    "votesNotHelpful": 0,
+    "explanation": "According to the National Bureau of Statistics (NBS), the headline inflation rate was measured at over 28.5% in the second quarter, driven heavily by food inflation and currency adjustments.",
+    "citations": [
+      {
+        "title": "National Bureau of Statistics: CPI and Inflation Report Q2",
+        "url": "https://nigerianstat.gov.ng/elibrary"
+      },
+      {
+        "title": "CDD West Africa: Tracking inflation claims in West Africa",
+        "url": "https://cddwestafrica.org/tracking-economic-claims/"
+      }
+    ]
+  },
+  {
+    "id": "claim_ng_004",
+    "claim": "The 700-kilometer Lagos-Calabar coastal highway has been completely paved and commissioned.",
+    "status": "Misleading",
+    "consensus": 0,
+    "votesHelpful": 0,
+    "votesNotHelpful": 0,
+    "explanation": "As of mid-2026, construction is only ongoing on the first 47-kilometer section (Section 1) starting from Lagos. The vast majority of the 700-kilometer alignment is still in the design, clearing, or procurement phase.",
+    "citations": [
+      {
+        "title": "Federal Ministry of Works: Project Update on Lagos-Calabar Coastal Highway",
+        "url": "https://works.gov.ng/lagos-calabar-coastal-highway"
+      },
+      {
+        "title": "Daily Trust Fact-Check: How much of the coastal highway is complete?",
+        "url": "https://dailytrust.com/fact-check-lagos-calabar-highway-completion/"
+      }
+    ]
+  }
+]

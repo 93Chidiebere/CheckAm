@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VeriNote Popup</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-area">
+        <span class="logo-icon">⚡</span>
+        <h1 class="logo-text">VeriNote</h1>
+      </div>
+      <div class="status-indicator">
+        <span class="pulse-dot"></span>
+        <span class="status-label">Live Sync</span>
+      </div>
+    </header>
+
+    <!-- Main Control Toggle -->
+    <div class="card toggle-card">
+      <div class="toggle-info">
+        <h3>Page Scanner</h3>
+        <p>Fact-check content on page load</p>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="scanner-toggle" checked>
+        <span class="slider round"></span>
+      </label>
+    </div>
+
+    <!-- User Reputation Profile Card -->
+    <div class="card profile-card">
+      <div class="card-header-small">Contributor Profile</div>
+      <div class="profile-main">
+        <div class="avatar">U</div>
+        <div class="profile-details">
+          <div class="username">Chidiebere</div>
+          <div class="reputation-badge">🏆 Gold Class Partner</div>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">98.2</div>
+          <div class="stat-label">Reputation</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">45</div>
+          <div class="stat-label">Contributions</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">12</div>
+          <div class="stat-label">Consensus Agree</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session Stats -->
+    <div class="card stats-card">
+      <div class="card-header-small">Live Ecosystem Stats</div>
+      <div class="session-stat-row">
+        <span>Claims Checked Today</span>
+        <span class="session-val">18</span>
+      </div>
+      <div class="session-stat-row">
+        <span>Active Peer Review Rooms</span>
+        <span class="session-val">4</span>
+      </div>
+      <div class="session-stat-row">
+        <span>AI Grounding Latency</span>
+        <span class="session-val">1.2s</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>UNESCO Youth Hackathon 2026</p>
+      <a href="http://localhost:3000/api/claims" target="_blank" class="footer-link">Database Explorer</a>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
