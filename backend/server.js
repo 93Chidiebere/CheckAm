@@ -205,6 +205,27 @@ Schema: { "status": "True"|"False"|"Misleading", "explanation": "text", "citatio
       return null;
     }
   }
+// In-memory rate limiting map for daily audits
+const auditRateLimits = new Map();
+
+function checkRateLimit(key) {
+  const now = Date.now();
+  const windowMs = 24 * 60 * 60 * 1000; // 24 hours
+  
+  if (!auditRateLimits.has(key)) {
+    auditRateLimits.set(key, []);
+  }
+  
+  const timestamps = auditRateLimits.get(key);
+  const recentTimestamps = timestamps.filter(t => now - t < windowMs);
+  auditRateLimits.set(key, recentTimestamps);
+  
+  if (recentTimestamps.length >= 10) {
+    return false;
+  }
+  
+  recentTimestamps.push(now);
+  return true;
 }
 
 // --- HTTP API Endpoints ---
@@ -236,6 +257,46 @@ app.post('/api/verify', async (req, res) => {
 
   // 2. If no mock claim matches and Gemini is enabled, query Gemini API
   if (isGeminiEnabled) {
+    let isPremium = false;
+    let userKey = req.ip || 'anonymous';
+    
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ') && isSupabaseEnabled) {
+      const token = authHeader.split(' ')[1];
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        if (user && !error) {
+          userKey = user.id;
+          
+          // Query subscription status
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('subscription_status')
+            .eq('id', user.id)
+            .single();
+            
+          if (profile && profile.subscription_status === 'premium') {
+            isPremium = true;
+            console.log(`[CheckAM Auth] Premium user verified: ${user.email}. Rate limit bypassed.`);
+          } else {
+            console.log(`[CheckAM Auth] Free tier user verified: ${user.email}.`);
+          }
+        }
+      } catch (err) {
+        console.error('[CheckAM Auth] Token validation error:', err);
+      }
+    }
+
+    if (!isPremium) {
+      const allowed = checkRateLimit(userKey);
+      if (!allowed) {
+        return res.status(402).json({ 
+          error: 'Rate limit exceeded', 
+          message: 'CheckAM Free tier is limited to 10 live AI audits per day. Please log in or upgrade to Premium for unlimited audits!' 
+        });
+      }
+    }
+
     console.log(`[API] Querying Gemini for live verification of: "${text}"`);
     const newClaim = await verifyClaimWithAI(text);
     if (newClaim) {
@@ -278,6 +339,14 @@ app.get('/api/claims', async (req, res) => {
     await loadClaims();
   }
   res.json(claimsDb);
+});
+
+// Expose public Supabase credentials dynamically to the frontend
+app.get('/api/config', (req, res) => {
+  res.json({
+    supabaseUrl: process.env.SUPABASE_URL || 'https://ppxxgiqzhylwvfbfsptv.supabase.co',
+    supabaseKey: process.env.SUPABASE_KEY || ''
+  });
 });
 
 // Auto-seed Supabase database on startup if it's empty

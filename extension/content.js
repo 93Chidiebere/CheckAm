@@ -190,7 +190,7 @@ function createFloatingTrigger() {
     fontFamily: 'sans-serif',
     transition: 'transform 0.15s ease'
   });
-  floatingTrigger.innerHTML = '🔍 Fact-Check with VeriNote';
+  floatingTrigger.innerHTML = '🔍 Fact-Check with CheckAM';
   
   floatingTrigger.addEventListener('mouseenter', () => {
     floatingTrigger.style.transform = 'scale(1.05)';
@@ -303,7 +303,7 @@ function triggerVerification(range) {
   const text = range.toString();
 
   chrome.runtime.sendMessage({ type: 'verify_text', text: text }, (response) => {
-    floatingTrigger.innerHTML = '🔍 Fact-Check with VeriNote';
+    floatingTrigger.innerHTML = '🔍 Fact-Check with CheckAM';
     floatingTrigger.style.display = 'none';
 
     if (response && response.success && response.data.found) {
@@ -326,7 +326,7 @@ function triggerVerification(range) {
       } catch (err) {
         console.error('[VeriNote] Failed to surround selected contents:', err);
         // Alert fallback if selection spans multiple element block boundaries
-        alert(`VeriNote Check: [${claimData.status}] ${claimData.explanation}`);
+        alert(`CheckAM Fact Check: [${claimData.status}] ${claimData.explanation}`);
       }
     } else {
       console.log('[VeriNote] Text not matched or verification failed.');
@@ -445,7 +445,7 @@ function renderTooltipContent(claim) {
 
   tooltipContainer.innerHTML = `
     <div class="verinote-header">
-      <span class="verinote-logo">⚡ VeriNote</span>
+      <span class="verinote-logo">⚡ CheckAM</span>
       <span class="verinote-badge" data-status="${claim.status}">${claim.status}</span>
     </div>
     <div class="verinote-body">

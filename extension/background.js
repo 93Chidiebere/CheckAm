@@ -1,9 +1,9 @@
-// VeriNote Background Service Worker
-// Handles communications with the local Node.js backend to bypass potential CSP (Content Security Policy) restrictions on host pages.
+// CheckAM Background Service Worker
+// Handles communications with the live Node.js backend to bypass potential CSP (Content Security Policy) restrictions on host pages.
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'verify_text') {
-    console.log('[Background] Received verification request for:', message.text);
+    console.log('[CheckAM Background] Received verification request for:', message.text);
     
     fetch('https://verinote-production.up.railway.app/api/verify', {
       method: 'POST',
@@ -14,11 +14,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('[Background] Verification response:', data);
+        console.log('[CheckAM Background] Verification response:', data);
         sendResponse({ success: true, data });
       })
       .catch(error => {
-        console.error('[Background] Verification error:', error);
+        console.error('[CheckAM Background] Verification error:', error);
         sendResponse({ success: false, error: error.message });
       });
 

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "VeriNote - Real-Time Fact Checker",
+  "name": "CheckAM - Verify it",
   "version": "1.0",
-  "description": "Scans articles and social media feeds, highlighting claims and overlaying real-time community notes.",
+  "description": "Real-time collaborative political fact-checking overlay for Africa.",
   "permissions": [
     "storage"
   ],

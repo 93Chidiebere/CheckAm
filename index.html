@@ -3,11 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VeriNote | Real-Time Collaborative Fact-Checking for Africa</title>
+  <title>CheckAM | Real-Time Collaborative Fact-Checking</title>
+  
+  <!-- PWA Manifest & Meta -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#10b981">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/lightning-bolt.png">
+
   <!-- Google Fonts: Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Supabase JS Client library CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root {
       --bg-dark: #07070a;
@@ -51,12 +63,12 @@
 
     /* Navbar */
     header {
-      padding: 24px 5%;
+      padding: 20px 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--border-color);
-      background: rgba(7, 7, 10, 0.8);
+      background: rgba(7, 7, 10, 0.85);
       backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
@@ -71,6 +83,7 @@
 
     .logo-icon {
       font-size: 24px;
+      color: var(--accent-green);
     }
 
     .logo-text {
@@ -82,10 +95,26 @@
       letter-spacing: -0.5px;
     }
 
+    .logo-slogan {
+      font-size: 11px;
+      color: var(--text-secondary);
+      border-left: 1px solid var(--border-color);
+      padding-left: 8px;
+      margin-left: 2px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
     .nav-links a {
       color: var(--text-secondary);
       text-decoration: none;
-      margin-left: 24px;
       font-size: 14px;
       font-weight: 600;
       transition: color 0.2s ease;
@@ -97,7 +126,7 @@
 
     /* Container */
     .container {
-      max-width: 1100px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 0 5%;
     }
@@ -105,7 +134,7 @@
     /* Hero Section */
     .hero {
       text-align: center;
-      padding: 80px 0 60px 0;
+      padding: 60px 0 40px 0;
     }
 
     .hero-badge {
@@ -119,15 +148,15 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .hero h1 {
-      font-size: 48px;
+      font-size: 42px;
       font-weight: 800;
       line-height: 1.15;
       letter-spacing: -1px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       background: linear-gradient(135deg, #ffffff 40%, #a3a3a3 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -140,10 +169,10 @@
     }
 
     .hero p {
-      font-size: 18px;
+      font-size: 16px;
       color: var(--text-secondary);
       max-width: 600px;
-      margin: 0 auto 32px auto;
+      margin: 0 auto 28px auto;
     }
 
     .cta-group {
@@ -154,9 +183,9 @@
     }
 
     .btn {
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
       font-weight: 700;
       text-decoration: none;
       cursor: pointer;
@@ -164,18 +193,19 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      outline: none;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
       color: white;
       border: none;
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
     }
 
     .btn-secondary {
@@ -189,34 +219,34 @@
       border-color: rgba(255, 255, 255, 0.2);
     }
 
-    /* Fact-Checker Search Console */
-    .checker-section {
-      margin-bottom: 80px;
-    }
-
+    /* Cards */
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border-color);
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      margin-bottom: 24px;
     }
 
     .card-title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
-      margin-bottom: 16px;
-      text-align: center;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
+    /* Search Box */
     .search-box {
       display: flex;
       gap: 12px;
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 6px 6px 6px 16px;
+      border-radius: 10px;
+      padding: 4px 4px 4px 12px;
       align-items: center;
       transition: border-color 0.2s ease;
     }
@@ -231,7 +261,7 @@
       border: none;
       outline: none;
       color: white;
-      font-size: 14px;
+      font-size: 13.5px;
       font-family: inherit;
     }
 
@@ -239,207 +269,205 @@
       background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
       font-weight: 700;
       cursor: pointer;
       font-family: inherit;
+      font-size: 12px;
     }
 
-    /* Result Panel */
+    /* Status Badges */
+    .status-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge[data-status="True"] { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .status-badge[data-status="False"] { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
+    .status-badge[data-status="Misleading"] { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
+
+    /* Results */
     .result-panel {
-      margin-top: 24px;
+      margin-top: 16px;
       border-top: 1px solid var(--border-color);
-      padding-top: 24px;
+      padding-top: 16px;
       display: none;
-      animation: fadeIn 0.4s ease forwards;
+      animation: fadeIn 0.3s ease;
     }
 
     .result-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
-    }
-
-    .status-badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .status-badge[data-status="True"] {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .status-badge[data-status="False"] {
-      background: rgba(239, 68, 68, 0.2);
-      color: #f87171;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .status-badge[data-status="Misleading"] {
-      background: rgba(245, 158, 11, 0.2);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
+      margin-bottom: 10px;
     }
 
     .result-explanation {
-      font-size: 14.5px;
+      font-size: 14px;
       color: var(--text-secondary);
-      margin-bottom: 18px;
-      line-height: 1.6;
-    }
-
-    .result-sources-title {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 14px;
     }
 
     .result-source-link {
       display: block;
       color: #60a5fa;
       text-decoration: none;
-      font-size: 13px;
-      margin-bottom: 6px;
+      font-size: 12.5px;
+      margin-bottom: 4px;
     }
 
-    .result-source-link:hover {
-      text-decoration: underline;
+    .result-source-link:hover { text-decoration: underline; }
+
+    /* User Profile Card */
+    .profile-dashboard {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
-    /* Live Feed / Stream */
-    .stream-section {
-      margin-bottom: 80px;
+    @media (max-width: 768px) {
+      .profile-dashboard { grid-template-columns: 1fr; }
     }
 
-    .section-header {
-      margin-bottom: 24px;
+    .profile-avatar-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    .section-title {
-      font-size: 20px;
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: 700;
+      font-size: 18px;
     }
 
+    .tier-indicator {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      border: 1px solid var(--border-color);
+      letter-spacing: 0.5px;
+    }
+
+    .premium-badge {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #000000;
+      border: none;
+    }
+
+    .progress-bar-container {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      height: 10px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--accent-green);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Live Feed Claims */
     .claims-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 16px;
     }
 
     .claim-card {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      padding: 20px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      border-radius: 12px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
     }
 
     .claim-card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-2px);
       border-color: rgba(255, 255, 255, 0.15);
     }
 
     .claim-text {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin: 8px 0;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
-    .claim-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 12px;
-    }
-
-    .claim-consensus-label {
-      font-size: 11px;
-      color: var(--text-secondary);
-    }
-
-    .claim-consensus-val {
-      font-weight: 700;
-      color: var(--accent-green);
-    }
-
-    /* How it works */
-    .workflow {
-      margin-bottom: 80px;
-      text-align: center;
-    }
-
-    .workflow-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-      margin-top: 30px;
-    }
-
-    .step-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px dashed var(--border-color);
-      border-radius: 14px;
-      padding: 30px;
-    }
-
-    .step-num {
-      width: 36px;
-      height: 36px;
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-      color: white;
-      display: flex;
+    /* Auth modal overlays */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      display: none;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
-      font-weight: 700;
-      margin: 0 auto 16px auto;
+      backdrop-filter: blur(8px);
     }
 
-    .step-card h3 {
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    .step-card p {
-      font-size: 13px;
-      color: var(--text-secondary);
+    /* PWA Install Banner */
+    .pwa-prompt {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      background: rgba(18,18,26,0.95);
+      border: 1px solid var(--accent-green);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+      animation: fadeInUp 0.4s ease;
     }
 
     /* Footer */
     footer {
       border-top: 1px solid var(--border-color);
-      padding: 40px 0;
+      padding: 30px 0;
       text-align: center;
       font-size: 12px;
       color: var(--text-secondary);
+      margin-top: 40px;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translate(-50%, 20px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
     }
   </style>
 </head>
@@ -450,11 +478,15 @@
   <header>
     <div class="logo-area">
       <span class="logo-icon">⚡</span>
-      <span class="logo-text">VeriNote</span>
+      <div>
+        <span class="logo-text">CheckAM</span>
+        <span class="logo-slogan">Verify it</span>
+      </div>
     </div>
     <div class="nav-links">
-      <a href="/" class="active">Search Dashboard</a>
+      <a href="/" class="active">Dashboard</a>
       <a href="/demo.html">Newspaper Demo</a>
+      <button id="auth-nav-btn" class="btn btn-secondary" style="padding: 6px 14px; font-size: 12px;">Sign In</button>
     </div>
   </header>
 
@@ -462,94 +494,453 @@
     
     <!-- Hero Section -->
     <section class="hero">
-      <div class="hero-badge">Political Truth Project</div>
-      <h1>Combating Misinformation in <span>Africa</span>, Real-Time.</h1>
-      <p>An open-source browser extension and collaborative platform checking policy claims made by public figures using Gemini search-grounded AI.</p>
+      <div class="hero-badge">Political Integrity Network</div>
+      <h1>Verify statements, in <span>real-time</span>.</h1>
+      <p>Decentralized political fact-checking overlay. Highlight claims to trigger live AI verification and sync audits dynamically.</p>
       <div class="cta-group">
         <a href="/demo.html" class="btn btn-primary">📖 Try Chrome Extension Demo</a>
-        <a href="https://github.com/93Chidiebere/VeriNote" target="_blank" class="btn btn-secondary">💻 Source Code (GitHub)</a>
+        <a href="#dashboard-anchor" id="explore-btn" class="btn btn-secondary">⚡ Open Live Portal</a>
       </div>
     </section>
 
-    <!-- Verification console -->
+    <!-- USER AUTHENTICATED CONSOLE PANEL -->
+    <div id="dashboard-anchor"></div>
+    <section class="card" id="user-dashboard" style="display:none;">
+      <div class="profile-dashboard">
+        <!-- Account Status card -->
+        <div style="border-right: 1px solid var(--border-color); padding-right:20px;">
+          <div class="profile-avatar-row">
+            <div class="avatar" id="profile-initials">U</div>
+            <div>
+              <div id="profile-email" style="font-weight:700; font-size:14px;">user@example.com</div>
+              <span id="tier-badge" class="tier-indicator">FREE ACCOUNT</span>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; font-size:12px;">
+              <span>Daily AI Audits</span>
+              <span id="audit-ratio">0 / 10 Used</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="audit-progress"></div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:16px;">
+            <button id="toggle-tier-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; border-color:var(--accent-purple);">
+              🚀 Simulate Premium Account
+            </button>
+            <button id="logout-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);">
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+        <!-- Premium Feature Sandbox -->
+        <div style="padding-left:10px;">
+          <div id="premium-features-locked" style="text-align:center; padding:20px 0;">
+            <span style="font-size:30px;">🔒</span>
+            <h4 style="margin:8px 0; font-size:14px;">Premium Sandbox Features Locked</h4>
+            <p style="font-size:11px; color:var(--text-secondary);">Upgrade your tier (simulated toggle on the left) to test speech recognition and PDF downloads!</p>
+          </div>
+
+          <div id="premium-features-active" style="display:none;">
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
+              <span style="color:#fbbf24;">⭐</span>
+              <h4 style="font-size:13px; font-weight:700;">Live Audio Fact-Checker (Speech-to-Text)</h4>
+            </div>
+            <p style="font-size:11px; color:var(--text-secondary); margin-bottom:10px;">
+              Simulate monitoring a politician's live speech. Tap listen and speak. CheckAM will flag statements in real-time.
+            </p>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+              <button id="mic-btn" class="btn btn-primary" style="font-size:11px; padding:6px 12px; background:linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">
+                🎤 Start Listening
+              </button>
+              <div id="mic-status" style="font-size:10px; color:var(--text-secondary);">Idle</div>
+            </div>
+            <div id="speech-transcript" style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:6px; padding:10px; font-size:12px; color:white; min-height:48px; max-height:80px; overflow-y:auto; margin-bottom:10px; font-style:italic;">
+              Transcript will appear here...
+            </div>
+            <button id="pdf-report-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; width:100%; justify-content:center;">
+              📄 Generate Fact-Check PDF Report
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checker section -->
     <section class="checker-section">
       <div class="card">
-        <div class="card-title">Live Claim Auditor</div>
-        <p style="font-size: 13px; color: var(--text-secondary); text-align: center; margin-bottom: 20px;">
-          Paste a quote or news headline below to trigger real-time Google search-grounded AI verification.
+        <div class="card-title">🔍 Live Claim Auditor</div>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+          Paste a quote or news statement below to audit it against database nodes or query the Gemini AI search ground.
         </p>
         <div class="search-box">
           <input type="text" id="checker-input" placeholder="e.g. Nigeria's external reserves increased by $10 billion in the last six months.">
           <button id="checker-btn">Audit Claim</button>
         </div>
 
-        <!-- Result Loading & Presentation -->
         <div class="result-panel" id="result-panel">
           <div class="result-header">
-            <span style="font-weight: 700; font-size: 15px;">Audit Status</span>
+            <span style="font-weight: 700; font-size: 14px;">Audit Results</span>
             <span class="status-badge" id="result-status" data-status="False">False</span>
           </div>
           <div class="result-explanation" id="result-explanation">
-            Explanation details...
+            Explanation...
           </div>
-          <div class="result-sources-title">Verified Sources Referenced</div>
-          <div id="result-sources">
-            <!-- Sources inserted here -->
-          </div>
+          <div style="font-size: 11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:4px; letter-spacing:0.5px;">Sources Citations</div>
+          <div id="result-sources"></div>
         </div>
       </div>
     </section>
 
     <!-- Live database feed -->
-    <section class="stream-section">
-      <div class="section-header">
-        <h2 class="section-title">Verified Claims Ledger</h2>
-        <span style="font-size: 12px; color: var(--accent-green); font-weight: 600;">● Live Supabase Feed</span>
+    <section style="margin-bottom: 60px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2 style="font-size:18px; font-weight:700;">Verified Claims Ledger</h2>
+        <span style="font-size:11px; color:var(--accent-green); font-weight:600; display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:var(--accent-green); display:inline-block; animation: pulse 1.5s infinite;"></span>
+          Live Supabase feed
+        </span>
       </div>
       <div class="claims-grid" id="claims-grid">
-        <!-- Live rows loaded dynamically -->
-        <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">
-          Connecting to database...
-        </div>
+        <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-secondary);">Connecting to database...</div>
       </div>
     </section>
 
-    <!-- Stepper Section -->
-    <section class="workflow">
-      <h2>The Real-Time Audit Workflow</h2>
-      <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">How VeriNote processes speech and text to preserve the integrity of news</p>
+    <!-- Process Workflow -->
+    <section style="margin-bottom: 40px; text-align:center;">
+      <h2 style="font-size:18px; font-weight:700; margin-bottom:4px;">The CheckAM Workflow</h2>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Protecting public information integrity in 3 simple phases</p>
       
-      <div class="workflow-grid">
-        <div class="step-card">
-          <div class="step-num">1</div>
-          <h3>DOM Scanning</h3>
-          <p>The Chrome extension parses text segments as you browse, matching them against registered database claims.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:20px;">
+        <div class="card" style="margin-bottom:0; padding:20px; border-style:dashed;">
+          <div style="width:30px; height:30px; background:linear-gradient(135deg, var(--accent-green), var(--accent-blue)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; font-weight:700; font-size:12px;">1</div>
+          <h4 style="font-size:14px; margin-bottom:6px;">Browser Extension</h4>
+          <p style="font-size:11.5px; color:var(--text-secondary);">Auto-scans news and socials on screen. Underlines policy statements dynamically.</p>
         </div>
-        <div class="step-card">
-          <div class="step-num">2</div>
-          <h3>Search Grounded AI</h3>
-          <p>For new claims, Google Gemini searches the web live to verify facts against official bureau data, generating source citations.</p>
+        <div class="card" style="margin-bottom:0; padding:20px; border-style:dashed;">
+          <div style="width:30px; height:30px; background:linear-gradient(135deg, var(--accent-green), var(--accent-blue)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; font-weight:700; font-size:12px;">2</div>
+          <h4 style="font-size:14px; margin-bottom:6px;">Sourced AI Grounding</h4>
+          <p style="font-size:11.5px; color:var(--text-secondary);">Retrieves facts from official web repositories (NBS, central banks) to analyze statements.</p>
         </div>
-        <div class="step-card">
-          <div class="step-num">3</div>
-          <h3>Consensus Rating</h3>
-          <p>Decentralized citizen auditors vote on note usefulness, dynamically adjusting trust percentages across all online tabs.</p>
+        <div class="card" style="margin-bottom:0; padding:20px; border-style:dashed;">
+          <div style="width:30px; height:30px; background:linear-gradient(135deg, var(--accent-green), var(--accent-blue)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; font-weight:700; font-size:12px;">3</div>
+          <h4 style="font-size:14px; margin-bottom:6px;">Consensus Audit Room</h4>
+          <p style="font-size:11.5px; color:var(--text-secondary);">Active subscribers vote helpful/unhelpful, syncing truth weights across all users instantly.</p>
         </div>
       </div>
     </section>
 
   </div>
 
-  <!-- Footer -->
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="auth-overlay">
+    <div class="card" style="width:100%; max-width:360px; position:relative;">
+      <button id="close-modal-btn" style="position:absolute; top:12px; right:16px; background:transparent; border:none; color:white; font-size:20px; cursor:pointer;">&times;</button>
+      <h3 style="font-size:18px; font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:8px;">⚡ Sign In to CheckAM</h3>
+      <p style="font-size:11px; color:var(--text-secondary); margin-bottom:16px;">Sign up or log in to track daily audits and access premium toolsets.</p>
+      
+      <div style="margin-bottom:12px;">
+        <label style="display:block; font-size:11px; font-weight:700; margin-bottom:4px; color:var(--text-secondary);">Email</label>
+        <input type="email" id="auth-email" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:rgba(255,255,255,0.02); color:white; font-family:inherit; outline:none; font-size:13px;" placeholder="you@example.com">
+      </div>
+      
+      <div style="margin-bottom:16px;">
+        <label style="display:block; font-size:11px; font-weight:700; margin-bottom:4px; color:var(--text-secondary);">Password</label>
+        <input type="password" id="auth-password" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:rgba(255,255,255,0.02); color:white; font-family:inherit; outline:none; font-size:13px;" placeholder="At least 6 chars">
+      </div>
+      
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <button id="signin-btn" class="btn btn-primary" style="justify-content:center; padding:8px;">Login</button>
+        <button id="signup-btn" class="btn btn-secondary" style="justify-content:center; padding:8px;">Register</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PWA INSTALL PROMPT -->
+  <div class="pwa-prompt" id="pwa-prompt">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span style="font-size:18px;">📲</span>
+        <span style="font-weight:700; font-size:13px;">Add CheckAM to Home Screen</span>
+      </div>
+      <button id="close-pwa-btn" style="background:transparent; border:none; color:white; font-size:16px; cursor:pointer;">&times;</button>
+    </div>
+    <p style="font-size:11.5px; color:var(--text-secondary); margin-bottom:10px;">Install the app on your phone/tablet for instant mobile fact-checking.</p>
+    <div id="install-instructions" style="font-size:11px; font-weight:700; color:var(--accent-green); margin-bottom:8px;"></div>
+    <button id="install-pwa-btn" class="btn btn-primary" style="width:100%; justify-content:center; padding:6px; font-size:11px; display:none;">Install App</button>
+  </div>
+
   <footer>
-    <p>VeriNote Project © 2026. Built with Node.js, WebSockets, Supabase, and Google Gemini API.</p>
+    <p>CheckAM Platform © 2026. Built with Node.js, WebSockets, Supabase, and Google Gemini API.</p>
   </footer>
 
-  <!-- Live Integration Client Logic -->
+  <!-- SCRIPT INTEGRATIONS -->
   <script>
     const BACKEND_URL = 'https://verinote-production.up.railway.app';
+    let supabase = null;
+    let currentUser = null;
+    let userProfile = null;
+    let dailyAuditCount = 0;
 
-    // 1. Audit Claim via API Button
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then((reg) => {
+          console.log('[PWA] Service worker registered:', reg.scope);
+        }).catch((err) => {
+          console.error('[PWA] Service worker failed:', err);
+        });
+      });
+    }
+
+    // Platform-specific PWA installation logic
+    const pwaPrompt = document.getElementById('pwa-prompt');
+    const closePwaBtn = document.getElementById('close-pwa-btn');
+    const installPwaBtn = document.getElementById('install-pwa-btn');
+    const installInstructions = document.getElementById('install-instructions');
+    let deferredPrompt = null;
+
+    closePwaBtn.addEventListener('click', () => { pwaPrompt.style.display = 'none'; });
+
+    // Detect iOS Safari
+    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator.standalone);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Check if already installed
+      if (isInStandaloneMode) return;
+
+      if (isIos && isSafari) {
+        installInstructions.innerText = '💡 Safari iOS: Tap the "Share" icon (square with arrow) below, then select "Add to Home Screen".';
+        pwaPrompt.style.display = 'block';
+      } else {
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          deferredPrompt = e;
+          installInstructions.innerText = '💡 Android/Chrome: Tap install to save CheckAM to your devices.';
+          installPwaBtn.style.display = 'flex';
+          pwaPrompt.style.display = 'block';
+        });
+      }
+    });
+
+    installPwaBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          console.log('[PWA] User accepted installation.');
+        }
+        deferredPrompt = null;
+        pwaPrompt.style.display = 'none';
+      }
+    });
+
+    // 1. Dynamic Config Fetch
+    async function initSupabaseClient() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/config`);
+        const config = await res.json();
+        
+        if (config.supabaseUrl && config.supabaseKey) {
+          supabase = supabaseJs.createClient(config.supabaseUrl, config.supabaseKey);
+          console.log('[Supabase] Client initialized successfully.');
+          
+          // Check Auth State on Startup
+          supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session) {
+              currentUser = session.user;
+              await fetchUserProfile();
+              updateAuthUI(true);
+            } else {
+              currentUser = null;
+              userProfile = null;
+              updateAuthUI(false);
+            }
+          });
+        } else {
+          console.warn('[Supabase] Missing credentials returned from backend API.');
+        }
+      } catch (e) {
+        console.error('[Supabase] Config connection failed:', e);
+      }
+    }
+
+    initSupabaseClient();
+
+    // 2. Auth Modal Control
+    const authNavBtn = document.getElementById('auth-nav-btn');
+    const authOverlay = document.getElementById('auth-overlay');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    authNavBtn.addEventListener('click', () => {
+      if (currentUser) {
+        // Scroll to dashboard directly if already logged in
+        document.getElementById('user-dashboard').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        authOverlay.style.display = 'flex';
+      }
+    });
+    closeModalBtn.addEventListener('click', () => { authOverlay.style.display = 'none'; });
+
+    // Register & Login Buttons
+    const signinBtn = document.getElementById('signin-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const authEmail = document.getElementById('auth-email');
+    const authPassword = document.getElementById('auth-password');
+
+    signinBtn.addEventListener('click', async () => {
+      const email = authEmail.value.trim();
+      const password = authPassword.value.trim();
+      if (!email || !password) return alert('Email and Password are required.');
+      
+      signinBtn.innerText = 'Logging in...';
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        authOverlay.style.display = 'none';
+      } catch (e) {
+        alert('Authentication failed: ' + e.message);
+      } finally {
+        signinBtn.innerText = 'Login';
+      }
+    });
+
+    signupBtn.addEventListener('click', async () => {
+      const email = authEmail.value.trim();
+      const password = authPassword.value.trim();
+      if (!email || !password) return alert('Email and Password are required.');
+
+      signupBtn.innerText = 'Creating account...';
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { username: email.split('@')[0] } }
+        });
+        if (error) throw error;
+        alert('Account registration initiated! Check your email inbox for confirmation, or log in directly if confirmation is disabled.');
+        authOverlay.style.display = 'none';
+      } catch (e) {
+        alert('Registration failed: ' + e.message);
+      } finally {
+        signupBtn.innerText = 'Register';
+      }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+    });
+
+    // Profile & Limits
+    async function fetchUserProfile() {
+      if (!currentUser) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+          
+        if (error) throw error;
+        userProfile = data;
+      } catch (e) {
+        console.error('[Database] Profile fetch failed:', e);
+        // Local simulation fallback profiles
+        userProfile = {
+          subscription_status: 'free',
+          reputation_score: 0,
+          contributions: 0
+        };
+      }
+    }
+
+    // Toggle simulated subscription
+    document.getElementById('toggle-tier-btn').addEventListener('click', async () => {
+      if (!userProfile) return;
+      
+      const newStatus = userProfile.subscription_status === 'premium' ? 'free' : 'premium';
+      
+      try {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ subscription_status: newStatus })
+          .eq('id', currentUser.id);
+          
+        if (error) throw error;
+        
+        userProfile.subscription_status = newStatus;
+        updateDashboardView();
+      } catch (e) {
+        console.warn('[Supabase] Failed to write database subscription, simulating locally...', e);
+        userProfile.subscription_status = newStatus;
+        updateDashboardView();
+      }
+    });
+
+    function updateAuthUI(isLoggedIn) {
+      if (isLoggedIn && currentUser) {
+        authNavBtn.innerText = 'Open Dashboard';
+        document.getElementById('user-dashboard').style.display = 'block';
+        document.getElementById('profile-email').innerText = currentUser.email;
+        document.getElementById('profile-initials').innerText = currentUser.email.charAt(0).toUpperCase();
+        updateDashboardView();
+      } else {
+        authNavBtn.innerText = 'Sign In';
+        document.getElementById('user-dashboard').style.display = 'none';
+        updateRateLimitVisuals();
+      }
+    }
+
+    function updateDashboardView() {
+      if (!userProfile) return;
+
+      const tierBadge = document.getElementById('tier-badge');
+      const toggleTierBtn = document.getElementById('toggle-tier-btn');
+      const lockedPanel = document.getElementById('premium-features-locked');
+      const activePanel = document.getElementById('premium-features-active');
+
+      if (userProfile.subscription_status === 'premium') {
+        tierBadge.innerText = 'PREMIUM ACCOUNT';
+        tierBadge.className = 'tier-indicator premium-badge';
+        toggleTierBtn.innerText = '📉 Downgrade to Free Tier';
+        lockedPanel.style.display = 'none';
+        activePanel.style.display = 'block';
+      } else {
+        tierBadge.innerText = 'FREE ACCOUNT';
+        tierBadge.className = 'tier-indicator';
+        toggleTierBtn.innerText = '🚀 Simulate Premium Account';
+        lockedPanel.style.display = 'block';
+        activePanel.style.display = 'none';
+      }
+      updateRateLimitVisuals();
+    }
+
+    function updateRateLimitVisuals() {
+      const isPremium = userProfile && userProfile.subscription_status === 'premium';
+      const fill = document.getElementById('audit-progress');
+      const ratio = document.getElementById('audit-ratio');
+
+      if (isPremium) {
+        fill.style.width = '100%';
+        fill.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+        ratio.innerText = 'Unlimited AI Audits Active';
+      } else {
+        const percent = Math.min((dailyAuditCount / 10) * 100, 100);
+        fill.style.width = `${percent}%`;
+        fill.style.background = 'var(--accent-green)';
+        ratio.innerText = `${dailyAuditCount} / 10 Used`;
+      }
+    }
+
+    // 3. Claim Auditor Action
     const checkerBtn = document.getElementById('checker-btn');
     const checkerInput = document.getElementById('checker-input');
     const resultPanel = document.getElementById('result-panel');
@@ -564,12 +955,30 @@
       checkerBtn.innerText = 'Auditing...';
       checkerBtn.disabled = true;
 
+      // Extract Auth Token Headers
+      let headers = { 'Content-Type': 'application/json' };
+      if (supabase && supabase.auth.session) {
+        const session = supabase.auth.session();
+        if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
+      } else if (supabase) {
+        // In v2 supabase client uses getSession()
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+
       try {
         const response = await fetch(`${BACKEND_URL}/api/verify`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: headers,
           body: JSON.stringify({ text })
         });
+
+        if (response.status === 402) {
+          const errData = await response.json();
+          alert(errData.message);
+          return;
+        }
+
         const resData = await response.json();
 
         if (resData.found) {
@@ -580,28 +989,32 @@
           resultStatus.setAttribute('data-status', claim.status);
           resultExplanation.innerText = claim.explanation;
 
-          // Render citations
           resultSources.innerHTML = claim.citations && claim.citations.length > 0
             ? claim.citations.map(c => `<a href="${c.url}" target="_blank" class="result-source-link">🔗 ${c.title}</a>`).join('')
             : '<div style="font-size:11px;color:#9ca3af;">No official sources linked.</div>';
 
           resultPanel.style.display = 'block';
+
+          // Track count locally for rendering limit feedback
+          if (claim.id.startsWith('ai_') && (!userProfile || userProfile.subscription_status !== 'premium')) {
+            dailyAuditCount++;
+            updateRateLimitVisuals();
+          }
           
-          // Refresh list
           fetchClaims();
         } else {
           alert('Could not verify claim. Ensure statement contains verifiable facts.');
         }
       } catch (e) {
         console.error('Error verification:', e);
-        alert('Server unreachable. Running local mock check? Make sure Railway is active.');
+        alert('Server unreachable. Make sure Railway is active.');
       } finally {
         checkerBtn.innerText = 'Audit Claim';
         checkerBtn.disabled = false;
       }
     });
 
-    // 2. Load and Display Claims Feed from Database
+    // 4. Load Claims Feed
     const claimsGrid = document.getElementById('claims-grid');
 
     async function fetchClaims() {
@@ -610,11 +1023,7 @@
         const claimsList = await response.json();
 
         if (claimsList.length === 0) {
-          claimsGrid.innerHTML = `
-            <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">
-              No claims in the database yet. Seed data should load if backend has started.
-            </div>
-          `;
+          claimsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">No verified claims in database ledger.</div>`;
           return;
         }
 
@@ -627,29 +1036,140 @@
                   <span style="font-size:10px; color:var(--text-secondary);">${c.id.startsWith('ai_') ? '🤖 AI Verified' : '📝 Database'}</span>
                 </div>
                 <div class="claim-text">${c.claim}</div>
-                <p style="font-size:12px; color:var(--text-secondary); line-height:1.4; display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+                <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.4; display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
                   ${c.explanation}
                 </p>
               </div>
-              <div class="claim-meta">
-                <span class="claim-consensus-label">Agreement</span>
-                <span class="claim-consensus-val">${c.consensus}%</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid rgba(255,255,255,0.05); padding-top:10px;">
+                <span style="font-size:10.5px; color:var(--text-secondary);">Consensus</span>
+                <span style="font-weight:700; color:var(--accent-green); font-size:11.5px;">${c.consensus}% Agreement</span>
               </div>
             </div>
           `;
         }).join('');
       } catch (e) {
-        console.error('Error fetching claims:', e);
-        claimsGrid.innerHTML = `
-          <div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px 0;">
-            Failed to connect to Supabase backend API. Check Railway logs.
-          </div>
-        `;
+        claimsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px 0;">Failed to sync with Supabase ledger feed.</div>`;
       }
     }
 
-    // Load feed on page start
     fetchClaims();
+
+    // 5. PREMIUM FEATURES SIMULATOR (Speech Recognition & PDF Generator)
+    const micBtn = document.getElementById('mic-btn');
+    const micStatus = document.getElementById('mic-status');
+    const speechTranscript = document.getElementById('speech-transcript');
+
+    let recognition = null;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-NG'; // Nigerian English context triggers
+
+      recognition.onstart = () => {
+        micStatus.innerText = 'Listening (Say: external reserves, fuel subsidy, or inflation)...';
+        micStatus.style.color = 'var(--accent-green)';
+        speechTranscript.innerText = '';
+      };
+
+      recognition.onerror = (e) => {
+        console.error('Speech recognition error:', e);
+        micStatus.innerText = 'Error capturing speech.';
+        micStatus.style.color = '#ef4444';
+      };
+
+      recognition.onend = () => {
+        micStatus.innerText = 'Idle';
+        micStatus.style.color = 'var(--text-secondary)';
+      };
+
+      recognition.onresult = (e) => {
+        let interimTranscript = '';
+        for (let i = e.resultIndex; i < e.results.length; ++i) {
+          if (e.results[i].isFinal) {
+            const finalSpeech = e.results[i][0].transcript.toLowerCase();
+            speechTranscript.innerText = e.results[i][0].transcript;
+            
+            // Check triggers
+            if (finalSpeech.includes('subsidy')) {
+              triggerAudioFactCheck("The government has fully eliminated the fuel subsidy, saving 2 trillion Naira.");
+            } else if (finalSpeech.includes('reserve') || finalSpeech.includes('external')) {
+              triggerAudioFactCheck("Nigeria's external reserves increased by $10 billion in the last six months alone.");
+            } else if (finalSpeech.includes('inflation')) {
+              triggerAudioFactCheck("Nigeria's inflation rate dropped to 12% in the second quarter.");
+            }
+          } else {
+            interimTranscript += e.results[i][0].transcript;
+            speechTranscript.innerText = interimTranscript;
+          }
+        }
+      };
+    }
+
+    micBtn.addEventListener('click', () => {
+      if (!recognition) {
+        alert('Web Speech API is not supported on this browser (use Chrome or Edge).');
+        return;
+      }
+
+      if (micStatus.innerText.startsWith('Listening')) {
+        recognition.stop();
+        micBtn.innerText = '🎤 Start Listening';
+      } else {
+        recognition.start();
+        micBtn.innerText = '🛑 Stop Listening';
+      }
+    });
+
+    async function triggerAudioFactCheck(matchedClaimText) {
+      micStatus.innerText = '⚡ Match found! Fetching audit card...';
+      micStatus.style.color = 'var(--accent-blue)';
+      
+      // Simulating a live search audit card display on-screen
+      checkerInput.value = matchedClaimText;
+      checkerBtn.click();
+    }
+
+    // Mock PDF Report Generator
+    document.getElementById('pdf-report-btn').addEventListener('click', () => {
+      const newWindow = window.open('', '_blank');
+      newWindow.document.write(`
+        <html>
+        <head>
+          <title>CheckAM Official Fact-Check Report</title>
+          <style>
+            body { font-family: sans-serif; padding: 40px; color: #111; line-height: 1.5; }
+            .header { border-bottom: 2px solid #10b981; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+            .badge { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 4px 12px; border-radius: 20px; font-weight: bold; text-transform: uppercase; font-size: 12px; }
+            .sources { background: #f3f4f6; padding: 15px; border-radius: 8px; margin-top: 20px; }
+          </style>
+        </head>
+        <body onload="window.print()">
+          <div class="header">
+            <div>
+              <h1 style="margin:0; font-size:28px;">⚡ CheckAM Fact-Check Dossier</h1>
+              <small>Exported by ${currentUser ? currentUser.email : 'CheckAM Partner'} on ${new Date().toLocaleDateString()}</small>
+            </div>
+            <div class="badge">AUDITED NOTE</div>
+          </div>
+          <h2>Verified Claim Audit Details</h2>
+          <p><strong>Claim:</strong> "Nigeria's external reserves increased by $10 billion in the last six months alone."</p>
+          <p><strong>Audit Finding:</strong> Misleading / Inaccurate Statement</p>
+          <p><strong>Fact-Check Explanation:</strong> The headline reserves figures are misleading. While gross reserves increased marginally due to oil revenues and treasury assets, the actual liquid net reserves remained heavily constrained. Financial indicators demonstrate debt commitments and swap liabilities are offsetting external foreign assets.</p>
+          
+          <div class="sources">
+            <h3>Verified Sources Cited</h3>
+            <ul>
+              <li>Premium Times Nigeria: The truth about gross foreign assets</li>
+              <li>Dubawa West Africa: Fact-Checking monetary reserves claims</li>
+            </ul>
+          </div>
+        </body>
+        </html>
+      `);
+      newWindow.document.close();
+    });
   </script>
 </body>
 </html>

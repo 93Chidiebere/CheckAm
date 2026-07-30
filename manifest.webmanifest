@@ -1,0 +1,22 @@
+{
+  "name": "CheckAM - Verify it",
+  "short_name": "CheckAM",
+  "description": "Real-time collaborative political fact-checking overlay for Africa.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#07070a",
+  "theme_color": "#10b981",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/192/lightning-bolt.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/lightning-bolt.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

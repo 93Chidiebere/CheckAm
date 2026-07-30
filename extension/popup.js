@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   scannerToggle.addEventListener('change', () => {
     const isEnabled = scannerToggle.checked;
     chrome.storage.local.set({ scannerEnabled: isEnabled }, () => {
-      console.log('[VeriNote] Scanner toggle saved state:', isEnabled);
+      console.log('[CheckAM] Scanner toggle saved state:', isEnabled);
       
       // Optionally notify active tab to disable highlights instantly
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

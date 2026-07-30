@@ -1,7 +1,7 @@
--- SQL Migration Script for Supabase PostgreSQL Database
--- Copy and paste this script into the Supabase SQL Editor to create the claims table.
+-- SQL Migration Script for Supabase PostgreSQL Database (CheckAM)
+-- Copy and paste this script into the Supabase SQL Editor to initialize your tables.
 
-CREATE TABLE IF NOT EXISTS claims (
+CREATE TABLE IF NOT EXISTS public.claims (
   id TEXT PRIMARY KEY,
   claim TEXT UNIQUE NOT NULL,
   status TEXT NOT NULL CHECK (status IN ('True', 'False', 'Misleading', 'Unverified')),
@@ -13,5 +13,34 @@ CREATE TABLE IF NOT EXISTS claims (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create index for fast text lookups during real-time scans
-CREATE INDEX IF NOT EXISTS idx_claims_claim ON claims (claim);
+CREATE INDEX IF NOT EXISTS idx_claims_claim ON public.claims (claim);
+
+-- User Profiles table linked to auth.users schema
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  reputation_score NUMERIC DEFAULT 0,
+  contributions INTEGER DEFAULT 0,
+  subscription_status TEXT DEFAULT 'free' CHECK (subscription_status IN ('free', 'premium')),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Trigger function to automatically create a public profile when a new user signs up in Supabase Auth
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, username, subscription_status)
+  VALUES (
+    new.id, 
+    COALESCE(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1)), 
+    'free'
+  );
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Recreate trigger (drop first to prevent duplicate bindings)
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
