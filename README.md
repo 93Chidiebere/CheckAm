@@ -26,7 +26,7 @@ By combining the speed of **Google Gemini's Search-Grounded AI** with the democr
 * **AI Engine**: Google Gemini API with Google Search Grounding.
 * **Hosting**: **Vercel** (Frontend/PWA), **Railway** (Consensus Backend).
 
----
+
 
 ## 📁 Repository Structure
 
@@ -47,6 +47,6 @@ VeriNote/
 │   ├── popup.css          # Extension Popup Styling
 │   ├── popup.html         # Extension popup HTML UI
 │   └── popup.js           # Extension settings controller
-├── demo.html              # Test portal featuring Nigerian policy claims
+├── index.html             # Homepage / Test portal featuring Nigerian policy claims
 └── README.md              # Documentation
 ```
