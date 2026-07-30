@@ -205,6 +205,8 @@ Schema: { "status": "True"|"False"|"Misleading", "explanation": "text", "citatio
       return null;
     }
   }
+}
+
 // In-memory rate limiting map for daily audits
 const auditRateLimits = new Map();
 
