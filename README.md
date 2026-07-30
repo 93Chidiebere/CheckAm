@@ -1,19 +1,19 @@
-# VeriNote: Real-Time Collaborative Fact-Checking
+# CheckAM: Real-Time Collaborative Fact-Checking
 
 > **Democratizing Truth and Combating Misinformation**
 
-VeriNote is a real-time, decentralized fact-checking solution designed to counter misinformation, particularly false claims and policy exaggerations by politicians, public figures, and their supporters in Nigeria and across Africa. 
+CheckAM is a real-time, decentralized fact-checking solution designed to counter misinformation, false claims, and statement exaggerations in Nigeria and across Africa. 
 
-By combining the speed of **Google Gemini's Search-Grounded AI** with the democratic trust of a **decentralized real-time consensus engine** (inspired by X's Community Notes), VeriNote delivers context and source verification directly to users as they consume content online.
+By combining the speed of **Google Gemini's Search-Grounded AI** with the democratic trust of a **decentralized real-time consensus engine** (inspired by X's Community Notes), CheckAM delivers context and source verification directly to users as they consume content online.
 
 ---
 
 ## Key Features
 
-* **Real-time Page Scanning**: Dynamically scans news portals and social media feeds, highlighting known factual claims in soft color-coded underlines.
+* **Real-time Page Scanning**: Dynamically scans news portals and social media feeds, highlighting known statements in soft color-coded underlines.
 * **Glassmorphic Information Cards**: Hovering over highlighted claims displays a sleek overlay with a factual summary, verified sources, and trust consensus metrics.
 * **Real-time WebSockets Voting**: Users can instantly rate notes as "Helpful" or "Not Helpful". Ratings and consensus bars update *instantly* across all open tabs without page reloads.
-* **Interactive AI Auditing**: Users can highlight *any* text selection on a webpage and click "Fact-Check with VeriNote" to trigger a live Google Gemini API verification grounded in real-time Google search results.
+* **Interactive AI Auditing**: Users can highlight *any* text selection on a webpage and click "Fact-Check with CheckAM" to trigger a live Google Gemini API verification grounded in real-time Google search results.
 
 ---
 
@@ -25,12 +25,12 @@ By combining the speed of **Google Gemini's Search-Grounded AI** with the democr
 * **AI Engine**: Google Gemini API with Google Search Grounding.
 * **Hosting**: **Vercel** (Frontend/PWA), **Railway** (Consensus Backend).
 
-
+---
 
 ## 📁 Repository Structure
 
 ```
-VeriNote/
+CheckAM/
 ├── backend/
 │   ├── node_modules/
 │   ├── .env               # Private keys & database credentials
@@ -46,6 +46,6 @@ VeriNote/
 │   ├── popup.css          # Extension Popup Styling
 │   ├── popup.html         # Extension popup HTML UI
 │   └── popup.js           # Extension settings controller
-├── index.html             # Homepage / Test portal featuring Nigerian policy claims
+├── index.html             # Homepage / Test portal featuring live media auditing
 └── README.md              # Documentation
 ```

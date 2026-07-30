@@ -530,9 +530,9 @@
     
     <!-- Hero Section -->
     <section class="hero">
-      <div class="hero-badge">Political Integrity Network</div>
+      <div class="hero-badge">Information Integrity Network</div>
       <h1>Verify statements, in <span>real-time</span>.</h1>
-      <p>Decentralized political fact-checking overlay. Highlight claims to trigger live AI verification and sync audits dynamically.</p>
+      <p>Decentralized community fact-checking overlay. Highlight statements to trigger live AI verification and sync audits dynamically.</p>
       <div class="cta-group">
         <a href="/demo.html" class="btn btn-primary">📖 Try Chrome Extension Demo</a>
         <a href="#dashboard-anchor" id="explore-btn" class="btn btn-secondary">⚡ Open Live Portal</a>
@@ -616,7 +616,7 @@
 
             <!-- Tab 3: YouTube URL -->
             <div class="media-panel" id="yt-panel">
-              <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Paste a political speech or interview YouTube link.</p>
+              <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Paste a broadcast, speech, or interview YouTube link.</p>
               <div style="display:flex; gap:8px; margin-bottom:8px;">
                 <input type="text" id="yt-url" placeholder="https://www.youtube.com/watch?v=..." style="flex:1; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:6px; color:white; padding:4px 8px; font-size:11px; outline:none;">
                 <button id="yt-audit-btn" class="btn btn-secondary" style="font-size:11px; padding:4px 10px;">Audit Video</button>
@@ -787,7 +787,7 @@
         const config = await res.json();
         
         if (config.supabaseUrl && config.supabaseKey) {
-          supabase = supabaseJs.createClient(config.supabaseUrl, config.supabaseKey);
+          supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
           console.log('[Supabase] Client initialized successfully.');
           
           supabase.auth.onAuthStateChange(async (event, session) => {
