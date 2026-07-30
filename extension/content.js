@@ -7,12 +7,60 @@ let currentHighlightNode = null;
 let currentClaimData = null;
 let selectedRange = null;
 
-// Predefined claims to automatically highlight on load (matches database.json keys)
+// Predefined claims with full offline metadata fallback to ensure tooltips work even when server is offline or blocked by HTTPS mixed-content rules
 const PREDEFINED_CLAIMS = [
-  { id: "claim_ng_001", claim: "Nigeria's external reserves increased by $10 billion in the last six months.", status: "False" },
-  { id: "claim_ng_002", claim: "The government has fully eliminated the fuel subsidy, saving 2 trillion Naira.", status: "Misleading" },
-  { id: "claim_ng_003", claim: "Nigeria's inflation rate dropped to 12% in the second quarter.", status: "False" },
-  { id: "claim_ng_004", claim: "The 700-kilometer Lagos-Calabar coastal highway has been completely paved and commissioned.", status: "Misleading" }
+  {
+    id: "claim_ng_001",
+    claim: "Nigeria's external reserves increased by $10 billion in the last six months.",
+    status: "False",
+    explanation: "Central Bank of Nigeria (CBN) data shows that external reserves fluctuated between $34 billion and $36 billion, indicating a net change of less than $2 billion, largely driven by debt service payments and foreign exchange interventions.",
+    citations: [
+      { title: "Dubawa: Fact-checking claims on Nigeria's reserves", url: "https://dubawa.org/fact-checking-nigerias-reserves" },
+      { title: "Central Bank of Nigeria: Foreign Reserves Movement", url: "https://www.cbn.gov.ng/IntOps/Reserve.asp" }
+    ],
+    votesHelpful: 0,
+    votesNotHelpful: 0,
+    consensus: 0
+  },
+  {
+    id: "claim_ng_002",
+    claim: "The government has fully eliminated the fuel subsidy, saving 2 trillion Naira.",
+    status: "Misleading",
+    explanation: "While the official subsidy budget line was removed, reports from the IMF and the National Petroleum Company (NNPC) show that the government continues to pay 'under-recovery' costs to cap retail fuel prices, amounting to indirect subsidies.",
+    citations: [
+      { title: "Premium Times: The truth about Nigeria's ongoing fuel subsidy payments", url: "https://www.premiumtimesng.com/news/top-news/698712-investigation-fuel-subsidy-by-another-name.html" },
+      { title: "FactCheckHub: Did Nigeria stop fuel subsidies?", url: "https://factcheckhub.com/did-nigeria-stop-fuel-subsidies/" }
+    ],
+    votesHelpful: 0,
+    votesNotHelpful: 0,
+    consensus: 0
+  },
+  {
+    id: "claim_ng_003",
+    claim: "Nigeria's inflation rate dropped to 12% in the second quarter.",
+    status: "False",
+    explanation: "According to the National Bureau of Statistics (NBS), the headline inflation rate was measured at over 28.5% in the second quarter, driven heavily by food inflation and currency adjustments.",
+    citations: [
+      { title: "National Bureau of Statistics: CPI and Inflation Report Q2", url: "https://nigerianstat.gov.ng/elibrary" },
+      { title: "CDD West Africa: Tracking inflation claims in West Africa", url: "https://cddwestafrica.org/tracking-economic-claims/" }
+    ],
+    votesHelpful: 0,
+    votesNotHelpful: 0,
+    consensus: 0
+  },
+  {
+    id: "claim_ng_004",
+    claim: "The 700-kilometer Lagos-Calabar coastal highway has been completely paved and commissioned.",
+    status: "Misleading",
+    explanation: "As of mid-2026, construction is only ongoing on the first 47-kilometer section (Section 1) starting from Lagos. The vast majority of the 700-kilometer alignment is still in the design, clearing, or procurement phase.",
+    citations: [
+      { title: "Federal Ministry of Works: Project Update on Lagos-Calabar Coastal Highway", url: "https://works.gov.ng/lagos-calabar-coastal-highway" },
+      { title: "Daily Trust Fact-Check: How much of the coastal highway is complete?", url: "https://dailytrust.com/fact-check-lagos-calabar-highway-completion/" }
+    ],
+    votesHelpful: 0,
+    votesNotHelpful: 0,
+    consensus: 0
+  }
 ];
 
 let isScannerEnabled = true;
@@ -65,7 +113,7 @@ function setupMessageListener() {
 // 2. WebSocket Connection for Real-Time Consensus Updates
 function connectWS() {
   try {
-    ws = new WebSocket('ws://localhost:3000');
+    ws = new WebSocket('wss://verinote-production.up.railway.app');
 
     ws.onopen = () => {
       console.log('[VeriNote] Connected to consensus WebSocket server.');
@@ -299,18 +347,25 @@ function setupHighlightListeners() {
 
     el.addEventListener('mouseenter', (e) => {
       const claimId = el.getAttribute('data-claim-id');
+      console.log('[VeriNote] Mouseenter event triggered for claim ID:', claimId);
       
-      // Fetch details from server or local cache (for predefined ones)
-      fetch(`http://localhost:3000/api/claims`)
+      // Try to fetch latest details from server
+      fetch(`https://verinote-production.up.railway.app/api/claims`)
         .then(res => res.json())
         .then(claimsList => {
           const claimData = claimsList.find(c => c.id === claimId);
           if (claimData) {
+            console.log('[VeriNote] Found claim in database response:', claimData);
             showTooltip(el, claimData);
+          } else {
+            console.log('[VeriNote] Claim not in database response, loading local fallback...');
+            showLocalFallback(el, claimId);
           }
         })
         .catch(err => {
-          console.error('[VeriNote] Failed to fetch claim data on hover:', err);
+          // If server is offline or blocked by browser mixed-content (HTTPS) security, load local fallback
+          console.warn('[VeriNote] Backend server unreachable. Loading offline card fallback...', err);
+          showLocalFallback(el, claimId);
         });
     });
 
@@ -325,6 +380,13 @@ function setupHighlightListeners() {
   });
 }
 
+function showLocalFallback(anchorNode, claimId) {
+  const claimData = PREDEFINED_CLAIMS.find(c => c.id === claimId);
+  if (claimData) {
+    showTooltip(anchorNode, claimData);
+  }
+}
+
 tooltipContainer?.addEventListener('mouseleave', () => {
   if (currentHighlightNode && !currentHighlightNode.matches(':hover')) {
     hideTooltip();
@@ -332,6 +394,7 @@ tooltipContainer?.addEventListener('mouseleave', () => {
 });
 
 function showTooltip(anchorNode, claimData) {
+  console.log('[VeriNote] showTooltip called for anchor:', anchorNode, 'with data:', claimData);
   currentHighlightNode = anchorNode;
   currentClaimData = claimData;
   
@@ -352,7 +415,7 @@ function positionTooltip(anchorNode) {
   
   // Center alignment horizontally
   let leftPos = rect.left + window.scrollX + (rect.width - 340) / 2;
-  // Position above the text. Subtract height of tooltip (approx 200px) + padding
+  // Position above the text. Subtract height of tooltip (approx 190px) + padding
   let topPos = rect.top + window.scrollY - 190;
   
   // Boundary safety checks
@@ -362,6 +425,8 @@ function positionTooltip(anchorNode) {
     // If there is no space above, show below the line
     topPos = rect.bottom + window.scrollY + 10;
   }
+  
+  console.log('[VeriNote] Calculated tooltip position:', { left: leftPos, top: topPos, rectTop: rect.top, windowScrollY: window.scrollY });
   
   tooltipContainer.style.left = `${leftPos}px`;
   tooltipContainer.style.top = `${topPos}px`;

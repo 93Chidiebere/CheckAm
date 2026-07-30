@@ -5,7 +5,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'verify_text') {
     console.log('[Background] Received verification request for:', message.text);
     
-    fetch('http://localhost:3000/api/verify', {
+    fetch('https://verinote-production.up.railway.app/api/verify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

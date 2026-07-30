@@ -280,9 +280,60 @@ app.get('/api/claims', async (req, res) => {
   res.json(claimsDb);
 });
 
+// Auto-seed Supabase database on startup if it's empty
+async function seedDatabaseIfEmpty() {
+  if (!isSupabaseEnabled) return;
+  try {
+    const { data, error } = await supabase
+      .from('claims')
+      .select('id');
+      
+    if (error) {
+      console.error('[Database] Seeding check failed:', error);
+      return;
+    }
+    
+    if (data.length === 0) {
+      console.log('[Database] Supabase claims table is empty. Seeding initial claims from database.json...');
+      
+      let seedClaims = [];
+      if (fs.existsSync(DB_PATH)) {
+        seedClaims = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
+      }
+      
+      if (seedClaims.length > 0) {
+        const dbRows = seedClaims.map(c => ({
+          id: c.id,
+          claim: c.claim,
+          status: c.status,
+          consensus: c.consensus || 0,
+          votes_helpful: c.votesHelpful || 0,
+          votes_not_helpful: c.votesNotHelpful || 0,
+          explanation: c.explanation,
+          citations: c.citations || []
+        }));
+        
+        const { error: insertError } = await supabase
+          .from('claims')
+          .insert(dbRows);
+          
+        if (insertError) {
+          console.error('[Database] Seeding failed:', insertError);
+        } else {
+          console.log(`[Database] Successfully seeded ${dbRows.length} initial claims to Supabase.`);
+          await loadClaims(); // Refresh memory cache
+        }
+      }
+    }
+  } catch (e) {
+    console.error('[Database] Seeding error:', e);
+  }
+}
+
 // Start HTTP Server
 const server = app.listen(PORT, async () => {
   await loadClaims();
+  await seedDatabaseIfEmpty();
   console.log(`[Server] VeriNote backend running on port ${PORT}`);
   console.log(`[Server] Web API: http://localhost:${PORT}/api/verify`);
 });
