@@ -22,18 +22,21 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   reputation_score NUMERIC DEFAULT 0,
   contributions INTEGER DEFAULT 0,
   subscription_status TEXT DEFAULT 'free' CHECK (subscription_status IN ('free', 'premium')),
+  role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin')),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Trigger function to automatically create a public profile when a new user signs up in Supabase Auth
+-- Auto-promotes vchidiebere.vc@gmail.com to Admin and Premium status
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, username, subscription_status)
+  INSERT INTO public.profiles (id, username, subscription_status, role)
   VALUES (
     new.id, 
     COALESCE(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1)), 
-    'free'
+    CASE WHEN new.email = 'vchidiebere.vc@gmail.com' THEN 'premium' ELSE 'free' END,
+    CASE WHEN new.email = 'vchidiebere.vc@gmail.com' THEN 'admin' ELSE 'user' END
   );
   RETURN new;
 END;

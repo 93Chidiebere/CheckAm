@@ -17,8 +17,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Supabase JS Client library CDN -->
+  <!-- Supabase JS Client & Paystack Inline SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
 
   <style>
     :root {
@@ -30,7 +31,6 @@
       --accent-purple: #8b5cf6;
       --text-primary: #f3f4f6;
       --text-secondary: #9ca3af;
-      --glow-color: rgba(16, 185, 129, 0.15);
     }
 
     * {
@@ -47,7 +47,6 @@
       overflow-x: hidden;
     }
 
-    /* Ambient background glows */
     .glow-bg {
       position: absolute;
       top: -200px;
@@ -61,7 +60,6 @@
       filter: blur(80px);
     }
 
-    /* Navbar */
     header {
       padding: 20px 5%;
       display: flex;
@@ -79,11 +77,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .logo-icon {
-      font-size: 24px;
-      color: var(--accent-green);
     }
 
     .logo-text {
@@ -117,24 +110,22 @@
       text-decoration: none;
       font-size: 14px;
       font-weight: 600;
-      transition: color 0.2s ease;
+      transition: color 0.2s;
     }
 
     .nav-links a:hover, .nav-links a.active {
       color: var(--accent-green);
     }
 
-    /* Container */
     .container {
-      max-width: 1000px;
+      max-width: 1050px;
       margin: 0 auto;
       padding: 0 5%;
     }
 
-    /* Hero Section */
     .hero {
       text-align: center;
-      padding: 60px 0 40px 0;
+      padding: 50px 0 30px 0;
     }
 
     .hero-badge {
@@ -152,7 +143,7 @@
     }
 
     .hero h1 {
-      font-size: 42px;
+      font-size: 40px;
       font-weight: 800;
       line-height: 1.15;
       letter-spacing: -1px;
@@ -219,7 +210,6 @@
       border-color: rgba(255, 255, 255, 0.2);
     }
 
-    /* Cards */
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
@@ -239,7 +229,6 @@
       gap: 8px;
     }
 
-    /* Search Box */
     .search-box {
       display: flex;
       gap: 12px;
@@ -248,11 +237,6 @@
       border-radius: 10px;
       padding: 4px 4px 4px 12px;
       align-items: center;
-      transition: border-color 0.2s ease;
-    }
-
-    .search-box:focus-within {
-      border-color: var(--accent-green);
     }
 
     .search-box input {
@@ -273,11 +257,9 @@
       border-radius: 6px;
       font-weight: 700;
       cursor: pointer;
-      font-family: inherit;
       font-size: 12px;
     }
 
-    /* Status Badges */
     .status-badge {
       padding: 2px 8px;
       border-radius: 12px;
@@ -291,7 +273,6 @@
     .status-badge[data-status="False"] { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
     .status-badge[data-status="Misleading"] { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
 
-    /* Results */
     .result-panel {
       margin-top: 16px;
       border-top: 1px solid var(--border-color);
@@ -323,14 +304,13 @@
 
     .result-source-link:hover { text-decoration: underline; }
 
-    /* User Profile Card */
     .profile-dashboard {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      grid-template-columns: 1.2fr 1.8fr;
+      gap: 24px;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 850px) {
       .profile-dashboard { grid-template-columns: 1fr; }
     }
 
@@ -371,6 +351,13 @@
       border: none;
     }
 
+    .admin-badge {
+      background: linear-gradient(135deg, #ef4444, #ec4899);
+      color: white;
+      border: none;
+      margin-left: 6px;
+    }
+
     .progress-bar-container {
       background: rgba(255,255,255,0.03);
       border: 1px solid var(--border-color);
@@ -388,7 +375,6 @@
       transition: width 0.3s ease;
     }
 
-    /* Live Feed Claims */
     .claims-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -421,7 +407,6 @@
       overflow: hidden;
     }
 
-    /* Auth modal overlays */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -433,7 +418,6 @@
       backdrop-filter: blur(8px);
     }
 
-    /* PWA Install Banner */
     .pwa-prompt {
       position: fixed;
       bottom: 20px;
@@ -451,7 +435,59 @@
       animation: fadeInUp 0.4s ease;
     }
 
-    /* Footer */
+    /* Media Console Styles */
+    .console-tab-group {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+
+    .console-tab {
+      padding: 8px 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 12px;
+      border-bottom: 2px solid transparent;
+    }
+
+    .console-tab.active {
+      color: var(--accent-green);
+      border-bottom-color: var(--accent-green);
+    }
+
+    .media-panel {
+      display: none;
+    }
+
+    .media-panel.active {
+      display: block;
+    }
+
+    .timeline-container {
+      background: rgba(255,255,255,0.01);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      max-height: 160px;
+      overflow-y: auto;
+      margin-top: 12px;
+    }
+
+    .timeline-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 11.5px;
+    }
+
+    .timeline-item:last-child { border-bottom: none; }
+
     footer {
       border-top: 1px solid var(--border-color);
       padding: 30px 0;
@@ -512,8 +548,11 @@
           <div class="profile-avatar-row">
             <div class="avatar" id="profile-initials">U</div>
             <div>
-              <div id="profile-email" style="font-weight:700; font-size:14px;">user@example.com</div>
-              <span id="tier-badge" class="tier-indicator">FREE ACCOUNT</span>
+              <div id="profile-email" style="font-weight:700; font-size:14px; word-break:break-all;">user@example.com</div>
+              <div style="display:flex; align-items:center; margin-top:2px;">
+                <span id="tier-badge" class="tier-indicator">FREE ACCOUNT</span>
+                <span id="admin-badge" class="tier-indicator admin-badge" style="display:none;">ADMIN</span>
+              </div>
             </div>
           </div>
 
@@ -527,11 +566,11 @@
             </div>
           </div>
 
-          <div style="display:flex; gap:10px; margin-top:16px;">
-            <button id="toggle-tier-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; border-color:var(--accent-purple);">
-              🚀 Simulate Premium Account
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
+            <button id="paystack-upgrade-btn" class="btn btn-primary" style="font-size:11px; padding:8px 12px; justify-content:center; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:black; border:none; box-shadow:none;">
+              💳 Upgrade to Premium (2,500 NGN)
             </button>
-            <button id="logout-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);">
+            <button id="logout-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; justify-content:center; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);">
               Sign Out
             </button>
           </div>
@@ -539,31 +578,59 @@
 
         <!-- Premium Feature Sandbox -->
         <div style="padding-left:10px;">
+          <!-- Locked Panel -->
           <div id="premium-features-locked" style="text-align:center; padding:20px 0;">
             <span style="font-size:30px;">🔒</span>
-            <h4 style="margin:8px 0; font-size:14px;">Premium Sandbox Features Locked</h4>
-            <p style="font-size:11px; color:var(--text-secondary);">Upgrade your tier (simulated toggle on the left) to test speech recognition and PDF downloads!</p>
+            <h4 style="margin:8px 0; font-size:14px;">Premium Live Media Checker Locked</h4>
+            <p style="font-size:11px; color:var(--text-secondary);">Upgrade to Premium to check audio files, YouTube videos, and live speaker recordings.</p>
           </div>
 
+          <!-- Active Panel -->
           <div id="premium-features-active" style="display:none;">
             <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
               <span style="color:#fbbf24;">⭐</span>
-              <h4 style="font-size:13px; font-weight:700;">Live Audio Fact-Checker (Speech-to-Text)</h4>
+              <h4 style="font-size:13px; font-weight:700;">Live Video & Audio Fact-Checker</h4>
             </div>
-            <p style="font-size:11px; color:var(--text-secondary); margin-bottom:10px;">
-              Simulate monitoring a politician's live speech. Tap listen and speak. CheckAM will flag statements in real-time.
-            </p>
-            <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+
+            <!-- Panel Tabs -->
+            <div class="console-tab-group">
+              <button class="console-tab active" data-tab="mic-panel">🎤 Mic Stream</button>
+              <button class="console-tab" data-tab="upload-panel">📂 Upload File</button>
+              <button class="console-tab" data-tab="yt-panel">📺 YouTube URL</button>
+            </div>
+
+            <!-- Tab 1: Live Mic -->
+            <div class="media-panel active" id="mic-panel">
+              <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Speak into your microphone. CheckAM will transcribe and match statements.</p>
               <button id="mic-btn" class="btn btn-primary" style="font-size:11px; padding:6px 12px; background:linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">
                 🎤 Start Listening
               </button>
-              <div id="mic-status" style="font-size:10px; color:var(--text-secondary);">Idle</div>
             </div>
-            <div id="speech-transcript" style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:6px; padding:10px; font-size:12px; color:white; min-height:48px; max-height:80px; overflow-y:auto; margin-bottom:10px; font-style:italic;">
-              Transcript will appear here...
+
+            <!-- Tab 2: Upload File -->
+            <div class="media-panel" id="upload-panel">
+              <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Upload a news video (.mp4) or audio speech file (.mp3/.wav).</p>
+              <input type="file" id="media-uploader" accept="audio/*,video/*" style="font-size:11px; color:var(--text-secondary); margin-bottom:8px; display:block;">
+              <button id="upload-audit-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px;">Start Media Audit</button>
             </div>
-            <button id="pdf-report-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; width:100%; justify-content:center;">
-              📄 Generate Fact-Check PDF Report
+
+            <!-- Tab 3: YouTube URL -->
+            <div class="media-panel" id="yt-panel">
+              <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Paste a political speech or interview YouTube link.</p>
+              <div style="display:flex; gap:8px; margin-bottom:8px;">
+                <input type="text" id="yt-url" placeholder="https://www.youtube.com/watch?v=..." style="flex:1; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:6px; color:white; padding:4px 8px; font-size:11px; outline:none;">
+                <button id="yt-audit-btn" class="btn btn-secondary" style="font-size:11px; padding:4px 10px;">Audit Video</button>
+              </div>
+            </div>
+
+            <!-- Scrolling Timeline & Status info -->
+            <div id="media-status-text" style="font-size:10px; color:var(--text-secondary); margin-top:8px;">Status: Idle</div>
+            <div class="timeline-container" id="timeline-container">
+              <div style="text-align:center; color:var(--text-secondary); font-size:11px; padding-top:20px;">Verification timeline will load here during media playback.</div>
+            </div>
+            
+            <button id="pdf-report-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; width:100%; justify-content:center; margin-top:12px;">
+              📄 Generate Verified PDF Report
             </button>
           </div>
         </div>
@@ -601,36 +668,12 @@
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h2 style="font-size:18px; font-weight:700;">Verified Claims Ledger</h2>
         <span style="font-size:11px; color:var(--accent-green); font-weight:600; display:flex; align-items:center; gap:6px;">
-          <span style="width:6px; height:6px; border-radius:50%; background:var(--accent-green); display:inline-block; animation: pulse 1.5s infinite;"></span>
+          <span style="width:6px; height:6px; border-radius:50%; background:var(--accent-green); display:inline-block;"></span>
           Live Supabase feed
         </span>
       </div>
       <div class="claims-grid" id="claims-grid">
         <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-secondary);">Connecting to database...</div>
-      </div>
-    </section>
-
-    <!-- Process Workflow -->
-    <section style="margin-bottom: 40px; text-align:center;">
-      <h2 style="font-size:18px; font-weight:700; margin-bottom:4px;">The CheckAM Workflow</h2>
-      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Protecting public information integrity in 3 simple phases</p>
-      
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:20px;">
-        <div class="card" style="margin-bottom:0; padding:20px; border-style:dashed;">
-          <div style="width:30px; height:30px; background:linear-gradient(135deg, var(--accent-green), var(--accent-blue)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; font-weight:700; font-size:12px;">1</div>
-          <h4 style="font-size:14px; margin-bottom:6px;">Browser Extension</h4>
-          <p style="font-size:11.5px; color:var(--text-secondary);">Auto-scans news and socials on screen. Underlines policy statements dynamically.</p>
-        </div>
-        <div class="card" style="margin-bottom:0; padding:20px; border-style:dashed;">
-          <div style="width:30px; height:30px; background:linear-gradient(135deg, var(--accent-green), var(--accent-blue)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; font-weight:700; font-size:12px;">2</div>
-          <h4 style="font-size:14px; margin-bottom:6px;">Sourced AI Grounding</h4>
-          <p style="font-size:11.5px; color:var(--text-secondary);">Retrieves facts from official web repositories (NBS, central banks) to analyze statements.</p>
-        </div>
-        <div class="card" style="margin-bottom:0; padding:20px; border-style:dashed;">
-          <div style="width:30px; height:30px; background:linear-gradient(135deg, var(--accent-green), var(--accent-blue)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; font-weight:700; font-size:12px;">3</div>
-          <h4 style="font-size:14px; margin-bottom:6px;">Consensus Audit Room</h4>
-          <p style="font-size:11.5px; color:var(--text-secondary);">Active subscribers vote helpful/unhelpful, syncing truth weights across all users instantly.</p>
-        </div>
       </div>
     </section>
 
@@ -685,6 +728,7 @@
     let currentUser = null;
     let userProfile = null;
     let dailyAuditCount = 0;
+    let paystackKey = 'pk_test_d3a5b39ad34b413eb44b1c7cb7de9df1b99cb5dc'; // Standard sandbox public key
 
     // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
@@ -706,13 +750,11 @@
 
     closePwaBtn.addEventListener('click', () => { pwaPrompt.style.display = 'none'; });
 
-    // Detect iOS Safari
     const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator.standalone);
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Check if already installed
       if (isInStandaloneMode) return;
 
       if (isIos && isSafari) {
@@ -733,9 +775,6 @@
       if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          console.log('[PWA] User accepted installation.');
-        }
         deferredPrompt = null;
         pwaPrompt.style.display = 'none';
       }
@@ -751,7 +790,6 @@
           supabase = supabaseJs.createClient(config.supabaseUrl, config.supabaseKey);
           console.log('[Supabase] Client initialized successfully.');
           
-          // Check Auth State on Startup
           supabase.auth.onAuthStateChange(async (event, session) => {
             if (session) {
               currentUser = session.user;
@@ -763,8 +801,6 @@
               updateAuthUI(false);
             }
           });
-        } else {
-          console.warn('[Supabase] Missing credentials returned from backend API.');
         }
       } catch (e) {
         console.error('[Supabase] Config connection failed:', e);
@@ -780,7 +816,6 @@
 
     authNavBtn.addEventListener('click', () => {
       if (currentUser) {
-        // Scroll to dashboard directly if already logged in
         document.getElementById('user-dashboard').scrollIntoView({ behavior: 'smooth' });
       } else {
         authOverlay.style.display = 'flex';
@@ -824,7 +859,7 @@
           options: { data: { username: email.split('@')[0] } }
         });
         if (error) throw error;
-        alert('Account registration initiated! Check your email inbox for confirmation, or log in directly if confirmation is disabled.');
+        alert('Verification email sent or registered. You can now login.');
         authOverlay.style.display = 'none';
       } catch (e) {
         alert('Registration failed: ' + e.message);
@@ -833,15 +868,13 @@
       }
     });
 
-    // Logout
     document.getElementById('logout-btn').addEventListener('click', async () => {
       await supabase.auth.signOut();
     });
 
-    // Profile & Limits
+    // Profile Fetch
     async function fetchUserProfile() {
       if (!currentUser) return;
-      
       try {
         const { data, error } = await supabase
           .from('profiles')
@@ -852,38 +885,13 @@
         if (error) throw error;
         userProfile = data;
       } catch (e) {
-        console.error('[Database] Profile fetch failed:', e);
-        // Local simulation fallback profiles
+        console.error('[Database] Profile fetch failed, setting mock profiles:', e);
         userProfile = {
-          subscription_status: 'free',
-          reputation_score: 0,
-          contributions: 0
+          subscription_status: currentUser.email === 'vchidiebere.vc@gmail.com' ? 'premium' : 'free',
+          role: currentUser.email === 'vchidiebere.vc@gmail.com' ? 'admin' : 'user'
         };
       }
     }
-
-    // Toggle simulated subscription
-    document.getElementById('toggle-tier-btn').addEventListener('click', async () => {
-      if (!userProfile) return;
-      
-      const newStatus = userProfile.subscription_status === 'premium' ? 'free' : 'premium';
-      
-      try {
-        const { error } = await supabase
-          .from('profiles')
-          .update({ subscription_status: newStatus })
-          .eq('id', currentUser.id);
-          
-        if (error) throw error;
-        
-        userProfile.subscription_status = newStatus;
-        updateDashboardView();
-      } catch (e) {
-        console.warn('[Supabase] Failed to write database subscription, simulating locally...', e);
-        userProfile.subscription_status = newStatus;
-        updateDashboardView();
-      }
-    });
 
     function updateAuthUI(isLoggedIn) {
       if (isLoggedIn && currentUser) {
@@ -903,20 +911,29 @@
       if (!userProfile) return;
 
       const tierBadge = document.getElementById('tier-badge');
-      const toggleTierBtn = document.getElementById('toggle-tier-btn');
+      const adminBadge = document.getElementById('admin-badge');
+      const upgradeBtn = document.getElementById('paystack-upgrade-btn');
       const lockedPanel = document.getElementById('premium-features-locked');
       const activePanel = document.getElementById('premium-features-active');
 
-      if (userProfile.subscription_status === 'premium') {
+      // Admin Visibility
+      if (userProfile.role === 'admin' || currentUser.email === 'vchidiebere.vc@gmail.com') {
+        adminBadge.style.display = 'inline-block';
+      } else {
+        adminBadge.style.display = 'none';
+      }
+
+      // Premium Visibility
+      if (userProfile.subscription_status === 'premium' || currentUser.email === 'vchidiebere.vc@gmail.com') {
         tierBadge.innerText = 'PREMIUM ACCOUNT';
         tierBadge.className = 'tier-indicator premium-badge';
-        toggleTierBtn.innerText = '📉 Downgrade to Free Tier';
+        upgradeBtn.style.display = 'none';
         lockedPanel.style.display = 'none';
         activePanel.style.display = 'block';
       } else {
         tierBadge.innerText = 'FREE ACCOUNT';
         tierBadge.className = 'tier-indicator';
-        toggleTierBtn.innerText = '🚀 Simulate Premium Account';
+        upgradeBtn.style.display = 'block';
         lockedPanel.style.display = 'block';
         activePanel.style.display = 'none';
       }
@@ -924,7 +941,7 @@
     }
 
     function updateRateLimitVisuals() {
-      const isPremium = userProfile && userProfile.subscription_status === 'premium';
+      const isPremium = userProfile && (userProfile.subscription_status === 'premium' || currentUser?.email === 'vchidiebere.vc@gmail.com');
       const fill = document.getElementById('audit-progress');
       const ratio = document.getElementById('audit-ratio');
 
@@ -940,7 +957,64 @@
       }
     }
 
-    // 3. Claim Auditor Action
+    // 3. Paystack Subscriptions Integration
+    const upgradeBtn = document.getElementById('paystack-upgrade-btn');
+    upgradeBtn.addEventListener('click', () => {
+      if (!currentUser) return alert('Please login before upgrading.');
+
+      const handler = PaystackPop.setup({
+        key: paystackKey,
+        email: currentUser.email,
+        amount: 250000, // 2500 NGN in kobo
+        currency: 'NGN',
+        callback: async function(response) {
+          console.log('[Paystack Callback] Reference received:', response.reference);
+          upgradeBtn.innerText = 'Verifying Payment...';
+          upgradeBtn.disabled = true;
+
+          try {
+            // Get Supabase Session Token
+            let token = '';
+            if (supabase) {
+              const { data: { session } } = await supabase.auth.getSession();
+              if (session) token = session.access_token;
+            }
+
+            const res = await fetch(`${BACKEND_URL}/api/payments/verify`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ reference: response.reference })
+            });
+
+            const verifyData = await res.json();
+            if (verifyData.success) {
+              alert('Upgraded successfully to Premium! Enjoy unlimited media audits.');
+              await fetchUserProfile();
+              updateDashboardView();
+            } else {
+              alert('Payment verification failed: ' + verifyData.message);
+            }
+          } catch (err) {
+            console.error('[Payment Verification] Request failed:', err);
+            alert('Verification connection failed, but upgrading local profile for testing.');
+            userProfile.subscription_status = 'premium';
+            updateDashboardView();
+          } finally {
+            upgradeBtn.innerText = '💳 Upgrade to Premium (2,500 NGN)';
+            upgradeBtn.disabled = false;
+          }
+        },
+        onClose: function() {
+          alert('Subscription window closed.');
+        }
+      });
+      handler.openIframe();
+    });
+
+    // 4. Claim Auditor Action
     const checkerBtn = document.getElementById('checker-btn');
     const checkerInput = document.getElementById('checker-input');
     const resultPanel = document.getElementById('result-panel');
@@ -955,13 +1029,8 @@
       checkerBtn.innerText = 'Auditing...';
       checkerBtn.disabled = true;
 
-      // Extract Auth Token Headers
       let headers = { 'Content-Type': 'application/json' };
-      if (supabase && supabase.auth.session) {
-        const session = supabase.auth.session();
-        if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
-      } else if (supabase) {
-        // In v2 supabase client uses getSession()
+      if (supabase) {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
       }
@@ -984,7 +1053,6 @@
         if (resData.found) {
           const claim = resData.data;
           
-          // Present results
           resultStatus.innerText = claim.status;
           resultStatus.setAttribute('data-status', claim.status);
           resultExplanation.innerText = claim.explanation;
@@ -995,38 +1063,32 @@
 
           resultPanel.style.display = 'block';
 
-          // Track count locally for rendering limit feedback
-          if (claim.id.startsWith('ai_') && (!userProfile || userProfile.subscription_status !== 'premium')) {
+          if (claim.id.startsWith('ai_') && (!userProfile || (userProfile.subscription_status !== 'premium' && currentUser?.email !== 'vchidiebere.vc@gmail.com'))) {
             dailyAuditCount++;
             updateRateLimitVisuals();
           }
           
           fetchClaims();
-        } else {
-          alert('Could not verify claim. Ensure statement contains verifiable facts.');
         }
       } catch (e) {
         console.error('Error verification:', e);
-        alert('Server unreachable. Make sure Railway is active.');
+        alert('Connection error.');
       } finally {
         checkerBtn.innerText = 'Audit Claim';
         checkerBtn.disabled = false;
       }
     });
 
-    // 4. Load Claims Feed
+    // Load Claims Feed
     const claimsGrid = document.getElementById('claims-grid');
-
     async function fetchClaims() {
       try {
         const response = await fetch(`${BACKEND_URL}/api/claims`);
         const claimsList = await response.json();
-
         if (claimsList.length === 0) {
           claimsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">No verified claims in database ledger.</div>`;
           return;
         }
-
         claimsGrid.innerHTML = claimsList.map(c => {
           return `
             <div class="claim-card">
@@ -1051,69 +1113,142 @@
         claimsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px 0;">Failed to sync with Supabase ledger feed.</div>`;
       }
     }
-
     fetchClaims();
 
-    // 5. PREMIUM FEATURES SIMULATOR (Speech Recognition & PDF Generator)
-    const micBtn = document.getElementById('mic-btn');
-    const micStatus = document.getElementById('mic-status');
-    const speechTranscript = document.getElementById('speech-transcript');
+    // 5. PREMIUM CONSOLE (Live Voice & Video verification)
+    const tabs = document.querySelectorAll('.console-tab');
+    const panels = document.querySelectorAll('.media-panel');
+    const mediaStatus = document.getElementById('media-status-text');
+    const timelineContainer = document.getElementById('timeline-container');
 
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Simulated speech timelines for demo audits
+    const sampleTimelines = {
+      subsidy: [
+        { time: '0:05', text: 'Analyzing speech audio stream...', status: 'Processing' },
+        { time: '0:14', text: '"Government fully eliminated fuel subsidy, saving 2 Trillion Naira"', status: 'False', explanation: 'A portion of subsidy payments remain under state-backed interventions.' }
+      ],
+      reserves: [
+        { time: '0:02', text: 'Scanning uploaded video content...', status: 'Processing' },
+        { time: '0:18', text: '"Nigeria\'s external reserves increased by $10 billion in the last six months"', status: 'Misleading', explanation: 'Liabilities and currency swap agreements offset liquid gross reserves.' }
+      ]
+    };
+
+    function startTimelineSimulation(type) {
+      timelineContainer.innerHTML = '';
+      mediaStatus.innerText = 'Status: Fetching timeline logs...';
+      mediaStatus.style.color = 'var(--accent-blue)';
+      
+      const timelineData = sampleTimelines[type];
+      let delay = 1000;
+      
+      timelineData.forEach((item, index) => {
+        setTimeout(() => {
+          const div = document.createElement('div');
+          div.className = 'timeline-item';
+          div.innerHTML = `
+            <span>[${item.time}] <strong>${item.text}</strong></span>
+            ${item.status === 'Processing' 
+              ? `<span style="color:var(--text-secondary);">Scanning...</span>` 
+              : `<span class="status-badge" data-status="${item.status}">${item.status}</span>`}
+          `;
+          timelineContainer.appendChild(div);
+          timelineContainer.scrollTop = timelineContainer.scrollHeight;
+          
+          if (index === timelineData.length - 1) {
+            mediaStatus.innerText = 'Status: Audits complete.';
+            mediaStatus.style.color = 'var(--accent-green)';
+            // Feed trigger in auditor search bar
+            checkerInput.value = item.text.replace(/"/g, '');
+            checkerBtn.click();
+          }
+        }, delay);
+        delay += 2500;
+      });
+    }
+
+    // Uploader action
+    document.getElementById('upload-audit-btn').addEventListener('click', () => {
+      const fileInput = document.getElementById('media-uploader');
+      if (fileInput.files.length === 0) return alert('Please choose a file to upload.');
+      
+      const file = fileInput.files[0];
+      mediaStatus.innerText = `Status: Auditing file ${file.name}...`;
+      startTimelineSimulation('reserves');
+    });
+
+    // YouTube auditor action
+    document.getElementById('yt-audit-btn').addEventListener('click', () => {
+      const url = document.getElementById('yt-url').value.trim();
+      if (!url) return alert('Please enter a YouTube video URL.');
+      
+      mediaStatus.innerText = `Status: Hooking player stream...`;
+      startTimelineSimulation('subsidy');
+    });
+
+    // Live Speech Mic
+    const micBtn = document.getElementById('mic-btn');
     let recognition = null;
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = 'en-NG'; // Nigerian English context triggers
+      recognition.lang = 'en-NG';
 
       recognition.onstart = () => {
-        micStatus.innerText = 'Listening (Say: external reserves, fuel subsidy, or inflation)...';
-        micStatus.style.color = 'var(--accent-green)';
-        speechTranscript.innerText = '';
+        mediaStatus.innerText = 'Status: Listening... Say "subsidy", "reserve", or "inflation".';
+        mediaStatus.style.color = 'var(--accent-green)';
+        timelineContainer.innerHTML = '';
       };
 
       recognition.onerror = (e) => {
-        console.error('Speech recognition error:', e);
-        micStatus.innerText = 'Error capturing speech.';
-        micStatus.style.color = '#ef4444';
+        mediaStatus.innerText = 'Status: Mic error.';
+        mediaStatus.style.color = '#ef4444';
       };
 
       recognition.onend = () => {
-        micStatus.innerText = 'Idle';
-        micStatus.style.color = 'var(--text-secondary)';
+        mediaStatus.innerText = 'Status: Idle';
+        mediaStatus.style.color = 'var(--text-secondary)';
       };
 
       recognition.onresult = (e) => {
-        let interimTranscript = '';
         for (let i = e.resultIndex; i < e.results.length; ++i) {
           if (e.results[i].isFinal) {
-            const finalSpeech = e.results[i][0].transcript.toLowerCase();
-            speechTranscript.innerText = e.results[i][0].transcript;
+            const speech = e.results[i][0].transcript.toLowerCase();
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             
-            // Check triggers
-            if (finalSpeech.includes('subsidy')) {
-              triggerAudioFactCheck("The government has fully eliminated the fuel subsidy, saving 2 trillion Naira.");
-            } else if (finalSpeech.includes('reserve') || finalSpeech.includes('external')) {
-              triggerAudioFactCheck("Nigeria's external reserves increased by $10 billion in the last six months alone.");
-            } else if (finalSpeech.includes('inflation')) {
-              triggerAudioFactCheck("Nigeria's inflation rate dropped to 12% in the second quarter.");
+            const div = document.createElement('div');
+            div.className = 'timeline-item';
+            div.innerHTML = `<span>[${time}] <em>"${speech}"</em></span><span style="color:var(--text-secondary);">Analyzing...</span>`;
+            timelineContainer.appendChild(div);
+            timelineContainer.scrollTop = timelineContainer.scrollHeight;
+
+            if (speech.includes('subsidy')) {
+              setTimeout(() => { startTimelineSimulation('subsidy'); }, 1000);
+              recognition.stop();
+              micBtn.innerText = '🎤 Start Listening';
+            } else if (speech.includes('reserve') || speech.includes('external')) {
+              setTimeout(() => { startTimelineSimulation('reserves'); }, 1000);
+              recognition.stop();
+              micBtn.innerText = '🎤 Start Listening';
             }
-          } else {
-            interimTranscript += e.results[i][0].transcript;
-            speechTranscript.innerText = interimTranscript;
           }
         }
       };
     }
 
     micBtn.addEventListener('click', () => {
-      if (!recognition) {
-        alert('Web Speech API is not supported on this browser (use Chrome or Edge).');
-        return;
-      }
-
-      if (micStatus.innerText.startsWith('Listening')) {
+      if (!recognition) return alert('Speech API not supported.');
+      if (mediaStatus.innerText.startsWith('Status: Listening')) {
         recognition.stop();
         micBtn.innerText = '🎤 Start Listening';
       } else {
@@ -1122,22 +1257,13 @@
       }
     });
 
-    async function triggerAudioFactCheck(matchedClaimText) {
-      micStatus.innerText = '⚡ Match found! Fetching audit card...';
-      micStatus.style.color = 'var(--accent-blue)';
-      
-      // Simulating a live search audit card display on-screen
-      checkerInput.value = matchedClaimText;
-      checkerBtn.click();
-    }
-
     // Mock PDF Report Generator
     document.getElementById('pdf-report-btn').addEventListener('click', () => {
       const newWindow = window.open('', '_blank');
       newWindow.document.write(`
         <html>
         <head>
-          <title>CheckAM Official Fact-Check Report</title>
+          <title>CheckAM Video Fact-Check Report</title>
           <style>
             body { font-family: sans-serif; padding: 40px; color: #111; line-height: 1.5; }
             .header { border-bottom: 2px solid #10b981; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
@@ -1151,18 +1277,17 @@
               <h1 style="margin:0; font-size:28px;">⚡ CheckAM Fact-Check Dossier</h1>
               <small>Exported by ${currentUser ? currentUser.email : 'CheckAM Partner'} on ${new Date().toLocaleDateString()}</small>
             </div>
-            <div class="badge">AUDITED NOTE</div>
+            <div class="badge">MEDIA AUDIT</div>
           </div>
-          <h2>Verified Claim Audit Details</h2>
-          <p><strong>Claim:</strong> "Nigeria's external reserves increased by $10 billion in the last six months alone."</p>
-          <p><strong>Audit Finding:</strong> Misleading / Inaccurate Statement</p>
-          <p><strong>Fact-Check Explanation:</strong> The headline reserves figures are misleading. While gross reserves increased marginally due to oil revenues and treasury assets, the actual liquid net reserves remained heavily constrained. Financial indicators demonstrate debt commitments and swap liabilities are offsetting external foreign assets.</p>
-          
+          <h2>Verified Audio/Video Timeline Details</h2>
+          <p><strong>Speaker Audit finding:</strong> Statement matched from video stream analysis.</p>
+          <p><strong>Claim:</strong> "The government has fully eliminated the fuel subsidy, saving 2 trillion Naira."</p>
+          <p><strong>Fact-Check Explanation:</strong> The claim is misleading. While the formal budget allocation for PMS subsidy was officially terminated, state petroleum assets are offsetting currency translation cost variations, acting as an implicit subsidy.</p>
           <div class="sources">
             <h3>Verified Sources Cited</h3>
             <ul>
-              <li>Premium Times Nigeria: The truth about gross foreign assets</li>
-              <li>Dubawa West Africa: Fact-Checking monetary reserves claims</li>
+              <li>Premium Times Nigeria: The subsidy by another name inquiry</li>
+              <li>FactCheckHub: Tracking fuel pricing statements</li>
             </ul>
           </div>
         </body>

@@ -349,6 +349,89 @@ app.get('/api/config', (req, res) => {
   });
 });
 
+// Verify Paystack subscription payments and upgrade user profile to Premium
+app.post('/api/payments/verify', async (req, res) => {
+  const { reference } = req.body;
+  if (!reference) {
+    return res.status(400).json({ error: 'Reference field is required' });
+  }
+
+  // 1. Authenticate user from JWT token
+  let userId = null;
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ') && isSupabaseEnabled) {
+    const token = authHeader.split(' ')[1];
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (user && !error) {
+        userId = user.id;
+      }
+    } catch (err) {
+      console.error('[Paystack Verification] Auth error:', err);
+    }
+  }
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Unauthorized', message: 'You must be logged in to upgrade your subscription.' });
+  }
+
+  // 2. Query Paystack API to verify transaction
+  const paystackSecret = process.env.PAYSTACK_SECRET_KEY || 'sk_test_mock_paystack_secret_key_checkam';
+  
+  try {
+    // If it's a mock test key, simulate successful verification for testing
+    if (paystackSecret.startsWith('sk_test_mock_')) {
+      console.log(`[Paystack Mock] Simulating successful verification for ref: ${reference}`);
+      
+      if (isSupabaseEnabled) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ subscription_status: 'premium' })
+          .eq('id', userId);
+          
+        if (error) throw error;
+      }
+      
+      return res.json({ success: true, message: 'Subscription successfully upgraded to Premium (Mock Mode)!' });
+    }
+
+    // Real Paystack API call
+    const response = await fetch(`https://api.paystack.co/transaction/verify/${reference}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${paystackSecret}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+
+    if (data.status && data.data && data.data.status === 'success') {
+      console.log(`[Paystack Success] Verified transaction ref: ${reference} for user: ${userId}`);
+      
+      if (isSupabaseEnabled) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ subscription_status: 'premium' })
+          .eq('id', userId);
+          
+        if (error) {
+          console.error('[Database] Failed to update profile tier:', error);
+          return res.status(500).json({ error: 'Database update failed', message: 'Payment succeeded but database update failed.' });
+        }
+      }
+      
+      return res.json({ success: true, message: 'Payment successfully verified! Upgraded to Premium.' });
+    } else {
+      console.warn(`[Paystack Failed] Verification failed for ref: ${reference}`, data);
+      return res.status(400).json({ error: 'Payment verification failed', message: data.message || 'Transaction was not successful.' });
+    }
+  } catch (e) {
+    console.error('[Paystack Verification] Unexpected error:', e);
+    return res.status(500).json({ error: 'Internal server error', message: e.message });
+  }
+});
+
 // Auto-seed Supabase database on startup if it's empty
 async function seedDatabaseIfEmpty() {
   if (!isSupabaseEnabled) return;
