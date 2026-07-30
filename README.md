@@ -1,7 +1,6 @@
 # VeriNote: Real-Time Collaborative Fact-Checking
 
-> **Building a Smarter, Safer, More Informed Digital World**
-> *Developed for the UNESCO Youth Hackathon 2026*
+> **Democratizing Truth and Combating Misinformation**
 
 VeriNote is a real-time, decentralized fact-checking solution designed to counter misinformation, particularly false claims and policy exaggerations by politicians, public figures, and their supporters in Nigeria and across Africa. 
 

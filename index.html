@@ -3,198 +3,653 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The West African Ledger | Policy & Fact Check Portal</title>
+  <title>VeriNote | Real-Time Collaborative Fact-Checking for Africa</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #0b0f19;
-      --text-color: #f1f5f9;
-      --card-bg: #111827;
-      --accent-color: #38bdf8;
-      --border-color: #1f2937;
-    }
-    
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: 'Outfit', 'Segoe UI', system-ui, sans-serif;
-      margin: 0;
-      padding: 0;
-      line-height: 1.7;
+      --bg-dark: #07070a;
+      --card-bg: rgba(18, 18, 26, 0.65);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-green: #10b981;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --glow-color: rgba(16, 185, 129, 0.15);
     }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glows */
+    .glow-bg {
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.05) 50%, rgba(0,0,0,0) 100%);
+      z-index: -1;
+      pointer-events: none;
+      filter: blur(80px);
+    }
+
+    /* Navbar */
     header {
-      border-bottom: 1px solid var(--border-color);
-      padding: 20px 40px;
+      padding: 24px 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(11, 15, 25, 0.85);
-      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(7, 7, 10, 0.8);
+      backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
-    .brand {
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      font-size: 24px;
+    }
+
+    .logo-text {
       font-size: 22px;
       font-weight: 800;
-      background: linear-gradient(135deg, #10b981, #3b82f6);
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       letter-spacing: -0.5px;
     }
 
     .nav-links a {
-      color: #9ca3af;
+      color: var(--text-secondary);
       text-decoration: none;
-      margin-left: 20px;
+      margin-left: 24px;
       font-size: 14px;
-      font-weight: 500;
-      transition: color 0.2s;
+      font-weight: 600;
+      transition: color 0.2s ease;
     }
 
-    .nav-links a:hover {
-      color: #34d399;
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent-green);
     }
 
+    /* Container */
     .container {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 5%;
     }
 
-    .article {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 32px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 80px 0 60px 0;
     }
 
-    .category {
-      color: #10b981;
+    .hero-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #34d399;
+      padding: 6px 14px;
+      border-radius: 30px;
       font-size: 12px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-    }
-
-    h2 {
-      font-size: 32px;
-      margin: 8px 0 16px 0;
-      letter-spacing: -0.5px;
-      line-height: 1.25;
-    }
-
-    .meta {
-      font-size: 13px;
-      color: #6b7280;
       margin-bottom: 24px;
     }
 
-    p {
-      font-size: 16px;
-      color: #d1d5db;
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1px;
       margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 40%, #a3a3a3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .quote-block {
-      background: rgba(16, 185, 129, 0.05);
-      border-left: 4px solid #10b981;
-      padding: 16px;
-      border-radius: 4px 12px 12px 4px;
-      margin: 30px 0;
-      font-style: italic;
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .instruction-card {
-      margin-top: 40px;
-      background: rgba(17, 24, 39, 0.5);
-      border: 1px dashed var(--border-color);
-      border-radius: 12px;
-      padding: 20px;
+    .hero p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 32px auto;
     }
 
-    .instruction-card h4 {
-      margin: 0 0 10px 0;
-      color: #f9fafb;
+    .cta-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
-    .instruction-card ul {
-      margin: 0;
-      padding-left: 20px;
-      color: #9ca3af;
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
       font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .instruction-card li {
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      color: white;
+      border: none;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Fact-Checker Search Console */
+    .checker-section {
+      margin-bottom: 80px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 6px 6px 6px 16px;
+      align-items: center;
+      transition: border-color 0.2s ease;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--accent-green);
+    }
+
+    .search-box input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .search-box button {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* Result Panel */
+    .result-panel {
+      margin-top: 24px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 24px;
+      display: none;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge[data-status="True"] {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-badge[data-status="False"] {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-badge[data-status="Misleading"] {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .result-explanation {
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    .result-sources-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
       margin-bottom: 6px;
+    }
+
+    .result-source-link {
+      display: block;
+      color: #60a5fa;
+      text-decoration: none;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .result-source-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Live Feed / Stream */
+    .stream-section {
+      margin-bottom: 80px;
+    }
+
+    .section-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .claims-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .claim-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .claim-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .claim-text {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .claim-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 12px;
+    }
+
+    .claim-consensus-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .claim-consensus-val {
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    /* How it works */
+    .workflow {
+      margin-bottom: 80px;
+      text-align: center;
+    }
+
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .step-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed var(--border-color);
+      border-radius: 14px;
+      padding: 30px;
+    }
+
+    .step-num {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-weight: 700;
+      margin: 0 auto 16px auto;
+    }
+
+    .step-card h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .step-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
+  <div class="glow-bg"></div>
+
+  <!-- Navbar -->
   <header>
-    <div class="brand">🇳🇬 The West African Ledger</div>
+    <div class="logo-area">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">VeriNote</span>
+    </div>
     <div class="nav-links">
-      <a href="#">Politics</a>
-      <a href="#">Economy</a>
-      <a href="#">Fact Checks</a>
-      <a href="#">Elections</a>
+      <a href="/" class="active">Search Dashboard</a>
+      <a href="/demo.html">Newspaper Demo</a>
     </div>
   </header>
 
   <div class="container">
-    <div class="article">
-      <div class="category">Special Report: Fact-Checking Policy Claims</div>
-      <h2>Analyzing the State of the Nation Address</h2>
-      <div class="meta">Published July 29, 2026 • Written by Babajide Okonjo</div>
-
-      <p>
-        In the wake of the latest ministerial briefings in Abuja, public discussions have centered on foreign reserves, energy costs, and infrastructure development. Policy critics and administration advocates have released contrasting numbers, highlighting the need for real-time verification of statistical claims in the public square.
-      </p>
-
-      <div class="quote-block">
-        "Our administration has shown fiscal discipline that is yielding results. For example, Nigeria's external reserves increased by $10 billion in the last six months alone."
-        <br><span style="font-size: 12px; font-weight: 700; color: #9ca3af; font-style: normal; margin-top: 5px; display: inline-block;">— Ministerial Press Briefing</span>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-badge">Political Truth Project</div>
+      <h1>Combating Misinformation in <span>Africa</span>, Real-Time.</h1>
+      <p>An open-source browser extension and collaborative platform checking policy claims made by public figures using Gemini search-grounded AI.</p>
+      <div class="cta-group">
+        <a href="/demo.html" class="btn btn-primary">📖 Try Chrome Extension Demo</a>
+        <a href="https://github.com/93Chidiebere/VeriNote" target="_blank" class="btn btn-secondary">💻 Source Code (GitHub)</a>
       </div>
+    </section>
 
-      <p>
-        Another major talking point was the fiscal impact of fuel pricing policies. A prominent government representative stated: <strong>The government has fully eliminated the fuel subsidy, saving 2 trillion Naira.</strong> They argued that these savings are already being redistributed to state governors to build rural roads and healthcare clinics.
-      </p>
+    <!-- Verification console -->
+    <section class="checker-section">
+      <div class="card">
+        <div class="card-title">Live Claim Auditor</div>
+        <p style="font-size: 13px; color: var(--text-secondary); text-align: center; margin-bottom: 20px;">
+          Paste a quote or news headline below to trigger real-time Google search-grounded AI verification.
+        </p>
+        <div class="search-box">
+          <input type="text" id="checker-input" placeholder="e.g. Nigeria's external reserves increased by $10 billion in the last six months.">
+          <button id="checker-btn">Audit Claim</button>
+        </div>
 
-      <p>
-        On inflation and the cost of living, opposition leaders were quick to highlight economic pressures. In a counter-press conference, they asserted that <strong>Nigeria's inflation rate dropped to 12% in the second quarter</strong>. They blamed monetary policies and currency adjustments for the current market prices.
-      </p>
+        <!-- Result Loading & Presentation -->
+        <div class="result-panel" id="result-panel">
+          <div class="result-header">
+            <span style="font-weight: 700; font-size: 15px;">Audit Status</span>
+            <span class="status-badge" id="result-status" data-status="False">False</span>
+          </div>
+          <div class="result-explanation" id="result-explanation">
+            Explanation details...
+          </div>
+          <div class="result-sources-title">Verified Sources Referenced</div>
+          <div id="result-sources">
+            <!-- Sources inserted here -->
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <p>
-        Finally, regarding capital projects, supporters of the Ministry of Works pointed to the coastal transport initiative. In a viral social media post, a coalition stated that <strong>The 700-kilometer Lagos-Calabar coastal highway has been completely paved and commissioned.</strong> This claim was widely shared to demonstrate infrastructural achievements.
-      </p>
+    <!-- Live database feed -->
+    <section class="stream-section">
+      <div class="section-header">
+        <h2 class="section-title">Verified Claims Ledger</h2>
+        <span style="font-size: 12px; color: var(--accent-green); font-weight: 600;">● Live Supabase Feed</span>
+      </div>
+      <div class="claims-grid" id="claims-grid">
+        <!-- Live rows loaded dynamically -->
+        <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">
+          Connecting to database...
+        </div>
+      </div>
+    </section>
 
-      <h3>Try Selection-Based Fact-Checking</h3>
-      <p>
-        You can select either of the sentences below, hover over the selection, and click the VeriNote floating trigger button to fact-check it using the Gemini API:
-      </p>
-      <p style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; font-style: italic; border: 1px solid rgba(255,255,255,0.05);">
-        "Lagos is the capital city of Nigeria."
-      </p>
-      <p style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px; font-style: italic; border: 1px solid rgba(255,255,255,0.05);">
-        "Nigeria has 36 states and a Federal Capital Territory."
-      </p>
-    </div>
+    <!-- Stepper Section -->
+    <section class="workflow">
+      <h2>The Real-Time Audit Workflow</h2>
+      <p style="color: var(--text-secondary); font-size: 14px; margin-top: 4px;">How VeriNote processes speech and text to preserve the integrity of news</p>
+      
+      <div class="workflow-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h3>DOM Scanning</h3>
+          <p>The Chrome extension parses text segments as you browse, matching them against registered database claims.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h3>Search Grounded AI</h3>
+          <p>For new claims, Google Gemini searches the web live to verify facts against official bureau data, generating source citations.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h3>Consensus Rating</h3>
+          <p>Decentralized citizen auditors vote on note usefulness, dynamically adjusting trust percentages across all online tabs.</p>
+        </div>
+      </div>
+    </section>
 
-    <!-- Instructions for Hackathon Judges -->
-    <div class="instruction-card">
-      <h4>🛠️ VeriNote Test Instructions</h4>
-      <ul>
-        <li>Make sure the backend server is running (`node server.js`).</li>
-        <li>Load the `extension` folder into Chrome Developer Extensions.</li>
-        <li>Open this page in Chrome (or view the live deployed link).</li>
-        <li>Observe that the key policy claims above are instantly highlighted in red or amber lines.</li>
-        <li>Hover over any highlighted text to see the glassmorphic fact-check overlay citing Nigerian fact-checking agencies like **Dubawa** and **Premium Times**.</li>
-        <li>Click "Helpful" or "Not Helpful" to see the consensus rating update instantly across active tabs.</li>
-        <li>To test the Gemini API search grounding: select "Lagos is the capital city of Nigeria." and click the floating trigger bubble. (It should flag it as False since Abuja is the capital).</li>
-      </ul>
-    </div>
   </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>VeriNote Project © 2026. Built with Node.js, WebSockets, Supabase, and Google Gemini API.</p>
+  </footer>
+
+  <!-- Live Integration Client Logic -->
+  <script>
+    const BACKEND_URL = 'https://verinote-production.up.railway.app';
+
+    // 1. Audit Claim via API Button
+    const checkerBtn = document.getElementById('checker-btn');
+    const checkerInput = document.getElementById('checker-input');
+    const resultPanel = document.getElementById('result-panel');
+    const resultStatus = document.getElementById('result-status');
+    const resultExplanation = document.getElementById('result-explanation');
+    const resultSources = document.getElementById('result-sources');
+
+    checkerBtn.addEventListener('click', async () => {
+      const text = checkerInput.value.trim();
+      if (!text) return;
+
+      checkerBtn.innerText = 'Auditing...';
+      checkerBtn.disabled = true;
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const resData = await response.json();
+
+        if (resData.found) {
+          const claim = resData.data;
+          
+          // Present results
+          resultStatus.innerText = claim.status;
+          resultStatus.setAttribute('data-status', claim.status);
+          resultExplanation.innerText = claim.explanation;
+
+          // Render citations
+          resultSources.innerHTML = claim.citations && claim.citations.length > 0
+            ? claim.citations.map(c => `<a href="${c.url}" target="_blank" class="result-source-link">🔗 ${c.title}</a>`).join('')
+            : '<div style="font-size:11px;color:#9ca3af;">No official sources linked.</div>';
+
+          resultPanel.style.display = 'block';
+          
+          // Refresh list
+          fetchClaims();
+        } else {
+          alert('Could not verify claim. Ensure statement contains verifiable facts.');
+        }
+      } catch (e) {
+        console.error('Error verification:', e);
+        alert('Server unreachable. Running local mock check? Make sure Railway is active.');
+      } finally {
+        checkerBtn.innerText = 'Audit Claim';
+        checkerBtn.disabled = false;
+      }
+    });
+
+    // 2. Load and Display Claims Feed from Database
+    const claimsGrid = document.getElementById('claims-grid');
+
+    async function fetchClaims() {
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/claims`);
+        const claimsList = await response.json();
+
+        if (claimsList.length === 0) {
+          claimsGrid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">
+              No claims in the database yet. Seed data should load if backend has started.
+            </div>
+          `;
+          return;
+        }
+
+        claimsGrid.innerHTML = claimsList.map(c => {
+          return `
+            <div class="claim-card">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                  <span class="status-badge" data-status="${c.status}">${c.status}</span>
+                  <span style="font-size:10px; color:var(--text-secondary);">${c.id.startsWith('ai_') ? '🤖 AI Verified' : '📝 Database'}</span>
+                </div>
+                <div class="claim-text">${c.claim}</div>
+                <p style="font-size:12px; color:var(--text-secondary); line-height:1.4; display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+                  ${c.explanation}
+                </p>
+              </div>
+              <div class="claim-meta">
+                <span class="claim-consensus-label">Agreement</span>
+                <span class="claim-consensus-val">${c.consensus}%</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('Error fetching claims:', e);
+        claimsGrid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px 0;">
+            Failed to connect to Supabase backend API. Check Railway logs.
+          </div>
+        `;
+      }
+    }
+
+    // Load feed on page start
+    fetchClaims();
+  </script>
 </body>
 </html>
