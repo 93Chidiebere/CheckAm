@@ -297,7 +297,7 @@ wss.on('connection', (ws) => {
   console.log('[WebSocket] Client connected.');
   clients.set(ws, new Set());
 
-  ws.on('message', (message) => {
+  ws.on('message', async (message) => {
     try {
       const data = JSON.parse(message);
       console.log('[WebSocket] Received:', data);
