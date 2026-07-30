@@ -723,6 +723,12 @@
 
   <!-- SCRIPT INTEGRATIONS -->
   <script>
+    // Global error handler for debugging
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert(`[CheckAM JS Error] ${message}\nSource: ${source}\nLine: ${lineno}\nCol: ${colno}`);
+      return false;
+    };
+
     const BACKEND_URL = 'https://verinote-production.up.railway.app';
     let supabase = null;
     let currentUser = null;
