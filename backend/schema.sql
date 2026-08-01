@@ -26,6 +26,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Schema migration: Ensure role and subscription_status exist if the table was created previously
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS subscription_status TEXT DEFAULT 'free' CHECK (subscription_status IN ('free', 'premium'));
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS role TEXT DEFAULT 'user' CHECK (role IN ('user', 'admin'));
+
 -- Trigger function to automatically create a public profile when a new user signs up in Supabase Auth
 -- Auto-promotes vchidiebere.vc@gmail.com to Admin and Premium status
 CREATE OR REPLACE FUNCTION public.handle_new_user()
