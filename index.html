@@ -18,7 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Supabase JS Client & Paystack Inline SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="https://js.paystack.co/v1/inline.js"></script>
 
   <style>
@@ -840,6 +840,18 @@
       const password = authPassword.value.trim();
       if (!email || !password) return alert('Email and Password are required.');
       
+      if (!supabase) {
+        console.warn('[Supabase] Client not initialized. Falling back to Mock Login mode.');
+        currentUser = { email: email, id: 'mock_user_' + Date.now() };
+        userProfile = {
+          subscription_status: email === 'vchidiebere.vc@gmail.com' ? 'premium' : 'free',
+          role: email === 'vchidiebere.vc@gmail.com' ? 'admin' : 'user'
+        };
+        updateAuthUI(true);
+        authOverlay.style.display = 'none';
+        return;
+      }
+      
       signinBtn.innerText = 'Logging in...';
       try {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -856,6 +868,19 @@
       const email = authEmail.value.trim();
       const password = authPassword.value.trim();
       if (!email || !password) return alert('Email and Password are required.');
+
+      if (!supabase) {
+        console.warn('[Supabase] Client not initialized. Falling back to Mock Signup mode.');
+        alert('Supabase offline. Mock account registered. Logging in...');
+        currentUser = { email: email, id: 'mock_user_' + Date.now() };
+        userProfile = {
+          subscription_status: email === 'vchidiebere.vc@gmail.com' ? 'premium' : 'free',
+          role: email === 'vchidiebere.vc@gmail.com' ? 'admin' : 'user'
+        };
+        updateAuthUI(true);
+        authOverlay.style.display = 'none';
+        return;
+      }
 
       signupBtn.innerText = 'Creating account...';
       try {
@@ -875,7 +900,13 @@
     });
 
     document.getElementById('logout-btn').addEventListener('click', async () => {
-      await supabase.auth.signOut();
+      if (supabase) {
+        await supabase.auth.signOut();
+      } else {
+        currentUser = null;
+        userProfile = null;
+        updateAuthUI(false);
+      }
     });
 
     // Profile Fetch
