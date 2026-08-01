@@ -347,7 +347,7 @@ app.get('/api/claims', async (req, res) => {
 app.get('/api/config', (req, res) => {
   res.json({
     supabaseUrl: process.env.SUPABASE_URL || 'https://ppxxgiqzhylwvfbfsptv.supabase.co',
-    supabaseKey: process.env.SUPABASE_KEY || ''
+    supabaseKey: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY || ''
   });
 });
 
