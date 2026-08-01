@@ -730,7 +730,7 @@
     };
 
     const BACKEND_URL = 'https://verinote-production.up.railway.app';
-    let supabase = null;
+    let supabaseClient = null;
     let currentUser = null;
     let userProfile = null;
     let dailyAuditCount = 0;
@@ -793,10 +793,10 @@
         const config = await res.json();
         
         if (config.supabaseUrl && config.supabaseKey) {
-          supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
+          supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
           console.log('[Supabase] Client initialized successfully.');
           
-          supabase.auth.onAuthStateChange(async (event, session) => {
+          supabaseClient.auth.onAuthStateChange(async (event, session) => {
             if (session) {
               currentUser = session.user;
               await fetchUserProfile();
@@ -840,7 +840,7 @@
       const password = authPassword.value.trim();
       if (!email || !password) return alert('Email and Password are required.');
       
-      if (!supabase) {
+      if (!supabaseClient) {
         console.warn('[Supabase] Client not initialized. Falling back to Mock Login mode.');
         currentUser = { email: email, id: 'mock_user_' + Date.now() };
         userProfile = {
@@ -854,7 +854,7 @@
       
       signinBtn.innerText = 'Logging in...';
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) throw error;
         authOverlay.style.display = 'none';
       } catch (e) {
@@ -869,7 +869,7 @@
       const password = authPassword.value.trim();
       if (!email || !password) return alert('Email and Password are required.');
 
-      if (!supabase) {
+      if (!supabaseClient) {
         console.warn('[Supabase] Client not initialized. Falling back to Mock Signup mode.');
         alert('Supabase offline. Mock account registered. Logging in...');
         currentUser = { email: email, id: 'mock_user_' + Date.now() };
@@ -884,7 +884,7 @@
 
       signupBtn.innerText = 'Creating account...';
       try {
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await supabaseClient.auth.signUp({
           email,
           password,
           options: { data: { username: email.split('@')[0] } }
@@ -900,8 +900,8 @@
     });
 
     document.getElementById('logout-btn').addEventListener('click', async () => {
-      if (supabase) {
-        await supabase.auth.signOut();
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
       } else {
         currentUser = null;
         userProfile = null;
@@ -913,7 +913,7 @@
     async function fetchUserProfile() {
       if (!currentUser) return;
       try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
           .from('profiles')
           .select('*')
           .eq('id', currentUser.id)
@@ -1012,8 +1012,8 @@
           try {
             // Get Supabase Session Token
             let token = '';
-            if (supabase) {
-              const { data: { session } } = await supabase.auth.getSession();
+            if (supabaseClient) {
+              const { data: { session } } = await supabaseClient.auth.getSession();
               if (session) token = session.access_token;
             }
 
@@ -1067,8 +1067,8 @@
       checkerBtn.disabled = true;
 
       let headers = { 'Content-Type': 'application/json' };
-      if (supabase) {
-        const { data: { session } } = await supabase.auth.getSession();
+      if (supabaseClient) {
+        const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
       }
 
