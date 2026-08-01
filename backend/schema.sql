@@ -47,3 +47,7 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Disable Row Level Security (RLS) to allow database access from client and server APIs
+ALTER TABLE IF EXISTS public.claims DISABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.profiles DISABLE ROW LEVEL SECURITY;
