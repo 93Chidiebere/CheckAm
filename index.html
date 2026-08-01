@@ -749,6 +749,80 @@
     .footer-links a:hover {
       color: var(--text-primary);
     }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      /* Header adjustments */
+      header {
+        padding: 12px 0;
+      }
+      .nav-links a {
+        display: none !important; /* Hide menu item text on mobile */
+      }
+      .header-nav {
+        gap: 12px;
+      }
+      
+      /* Hero Layout stack */
+      .hero-section {
+        padding: 40px 0;
+      }
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        text-align: center;
+      }
+      .hero-title {
+        font-size: 32px !important;
+        letter-spacing: -1px;
+      }
+      .hero-desc {
+        margin: 0 auto 24px auto;
+        font-size: 14px;
+      }
+      .hero-cta {
+        justify-content: center;
+        gap: 10px;
+      }
+      .hero-cta .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* Console Stack */
+      .profile-dashboard {
+        grid-template-columns: 1fr !important;
+        gap: 24px;
+      }
+      .profile-dashboard > div:first-child {
+        border-right: none !important;
+        padding-right: 0 !important;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 20px;
+        margin-bottom: 8px;
+      }
+
+      /* Section headings */
+      .section-header h2 {
+        font-size: 24px;
+      }
+
+      /* Trust Section tags spacing */
+      .trust-tags {
+        gap: 16px;
+        font-size: 11px;
+      }
+
+      /* Footer stack */
+      .footer-grid {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+      .footer-links {
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
