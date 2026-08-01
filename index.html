@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CheckAM | Real-Time Collaborative Fact-Checking</title>
+  <title>CheckAM | Information Integrity & Fact-Checking</title>
   
   <!-- PWA Manifest & Meta -->
   <link rel="manifest" href="/manifest.webmanifest">
@@ -12,10 +12,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/lightning-bolt.png">
 
-  <!-- Google Fonts: Outfit -->
+  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Supabase JS Client & Paystack Inline SDK -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -23,14 +23,15 @@
 
   <style>
     :root {
-      --bg-dark: #07070a;
-      --card-bg: rgba(18, 18, 26, 0.65);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --accent-green: #10b981;
-      --accent-blue: #3b82f6;
-      --accent-purple: #8b5cf6;
-      --text-primary: #f3f4f6;
-      --text-secondary: #9ca3af;
+      --bg-dark: #0A0D12;
+      --surface-elevated: #161B22;
+      --border-color: #21262D;
+      --border-focus: #30363D;
+      --accent-emerald: #10B981;
+      --accent-blue: #3B82F6;
+      --text-primary: #F0F6FC;
+      --text-secondary: #8B949E;
+      --text-muted: #484F58;
     }
 
     * {
@@ -42,290 +43,520 @@
     body {
       background-color: var(--bg-dark);
       color: var(--text-primary);
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       line-height: 1.6;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .glow-bg {
-      position: absolute;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.05) 50%, rgba(0,0,0,0) 100%);
-      z-index: -1;
-      pointer-events: none;
-      filter: blur(80px);
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-focus);
     }
 
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header styling */
     header {
-      padding: 20px 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 20px 0;
       border-bottom: 1px solid var(--border-color);
-      background: rgba(7, 7, 10, 0.85);
-      backdrop-filter: blur(16px);
+      background: rgba(10, 13, 18, 0.85);
+      backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 100;
     }
 
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     .logo-area {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .logo-icon {
+      font-size: 20px;
+      color: var(--accent-emerald);
     }
 
     .logo-text {
-      font-size: 22px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 18px;
+      font-weight: 700;
       letter-spacing: -0.5px;
     }
 
     .logo-slogan {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-secondary);
-      border-left: 1px solid var(--border-color);
-      padding-left: 8px;
-      margin-left: 2px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 700;
+      background: var(--surface-elevated);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      margin-left: 6px;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 24px;
     }
 
     .nav-links a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 14px;
-      font-weight: 600;
-      transition: color 0.2s;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: color 0.15s ease;
     }
 
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--accent-green);
+    .nav-links a:hover {
+      color: var(--text-primary);
     }
 
-    .container {
-      max-width: 1050px;
-      margin: 0 auto;
-      padding: 0 5%;
-    }
-
-    .hero {
-      text-align: center;
-      padding: 50px 0 30px 0;
-    }
-
-    .hero-badge {
-      display: inline-block;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      color: #34d399;
-      padding: 6px 14px;
-      border-radius: 30px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 20px;
-    }
-
-    .hero h1 {
-      font-size: 40px;
-      font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #ffffff 40%, #a3a3a3 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero h1 span {
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p {
-      font-size: 16px;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto 28px auto;
-    }
-
-    .cta-group {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
+    /* Button styles */
     .btn {
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 8px 16px;
+      border-radius: 6px;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
       text-decoration: none;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.15s ease;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       outline: none;
+      border: 1px solid transparent;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-      color: white;
-      border: none;
-      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+      background-color: var(--accent-emerald);
+      color: #0A0D12;
+      border: 1px solid var(--accent-emerald);
     }
 
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+      background-color: #0d9488;
+      border-color: #0d9488;
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.04);
+      background-color: transparent;
       color: var(--text-primary);
       border: 1px solid var(--border-color);
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
+      background-color: var(--surface-elevated);
+      border-color: var(--border-focus);
     }
 
+    /* Hero Layout */
+    .hero-section {
+      padding: 80px 0 60px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--accent-emerald);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .hero-title {
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .hero-desc {
+      font-size: 15.5px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      max-width: 520px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Mockups & Card boards */
     .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
+      background: var(--surface-elevated);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
+      border-radius: 8px;
       padding: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
 
-    .card-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 12px;
+    /* Browser-style Verification Mockup */
+    .browser-mockup {
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--surface-elevated);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .browser-header {
+      background: #1C2128;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       gap: 8px;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .search-box {
-      display: flex;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 4px 4px 4px 12px;
-      align-items: center;
+    .browser-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-focus);
     }
 
-    .search-box input {
+    .browser-url {
       flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: white;
-      font-size: 13.5px;
-      font-family: inherit;
+      background: var(--bg-dark);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 10px;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+      text-align: center;
     }
 
-    .search-box button {
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
+    .browser-content {
+      padding: 24px;
+      background: var(--bg-dark);
+      min-height: 280px;
+      font-size: 12.5px;
+      position: relative;
+    }
+
+    .mock-article-title {
+      font-size: 15px;
       font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .mock-highlight {
+      background: rgba(16, 185, 129, 0.15);
+      border-bottom: 1.5px dashed var(--accent-emerald);
+      padding: 2px 0;
       cursor: pointer;
-      font-size: 12px;
+    }
+
+    /* Floating Verification Overlays */
+    .verification-overlay {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      right: 20px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     .status-badge {
+      display: inline-block;
       padding: 2px 8px;
-      border-radius: 12px;
-      font-weight: 700;
+      border-radius: 4px;
       font-size: 10px;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .status-badge[data-status="True"] { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
-    .status-badge[data-status="False"] { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
-    .status-badge[data-status="Misleading"] { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
+    .status-badge[data-status="True"] { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .status-badge[data-status="False"] { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .status-badge[data-status="Misleading"] { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .status-badge[data-status="Unverified"] { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
 
-    .result-panel {
-      margin-top: 16px;
-      border-top: 1px solid var(--border-color);
-      padding-top: 16px;
-      display: none;
-      animation: fadeIn 0.3s ease;
+    /* Trust section */
+    .trust-section {
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border-color);
+      text-align: center;
     }
 
-    .result-header {
+    .trust-title {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .trust-tags {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .result-explanation {
-      font-size: 14px;
-      color: var(--text-secondary);
-      margin-bottom: 14px;
-    }
-
-    .result-source-link {
-      display: block;
-      color: #60a5fa;
-      text-decoration: none;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
       font-size: 12.5px;
-      margin-bottom: 4px;
+      color: var(--text-secondary);
+      font-weight: 600;
     }
 
-    .result-source-link:hover { text-decoration: underline; }
+    /* Workflow Timeline */
+    .workflow-section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-    .profile-dashboard {
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-header h2 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .section-header p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .workflow-timeline {
       display: grid;
-      grid-template-columns: 1.2fr 1.8fr;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 24px;
     }
 
-    @media (max-width: 850px) {
-      .profile-dashboard { grid-template-columns: 1fr; }
+    .workflow-step {
+      position: relative;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
     }
 
-    .profile-avatar-row {
+    .workflow-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--border-color);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      border: 1px solid var(--border-focus);
+    }
+
+    .workflow-step h4 {
+      font-size: 14.5px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .workflow-step p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Feature Cards */
+    .features-section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 28px;
+      transition: border-color 0.15s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-focus);
+    }
+
+    .feature-icon {
+      font-size: 22px;
+      margin-bottom: 16px;
+      color: var(--accent-emerald);
+    }
+
+    .feature-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Testimonials */
+    .testimonials-section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .testimonial-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .testimonial-quote {
+      font-size: 13.5px;
+      color: var(--text-primary);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-author {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 16px;
+    }
+
+    .author-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .author-info h5 {
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .author-info span {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    /* FAQ section */
+    .faq-section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .faq-list {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+    }
+
+    .faq-question {
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-answer {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 10px;
+      display: none;
+      line-height: 1.6;
+    }
+
+    /* Custom Console UI Styles */
+    .profile-dashboard {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 20px;
     }
 
     .avatar {
       width: 44px;
       height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      background: var(--border-focus);
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -339,15 +570,15 @@
       border-radius: 4px;
       font-size: 9px;
       font-weight: 800;
-      background: rgba(255,255,255,0.06);
-      color: white;
+      background: var(--border-color);
+      color: var(--text-primary);
       border: 1px solid var(--border-color);
       letter-spacing: 0.5px;
     }
 
     .premium-badge {
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #000000;
+      color: #000;
       border: none;
     }
 
@@ -359,10 +590,10 @@
     }
 
     .progress-bar-container {
-      background: rgba(255,255,255,0.03);
+      background: var(--bg-dark);
       border: 1px solid var(--border-color);
-      border-radius: 6px;
-      height: 10px;
+      border-radius: 4px;
+      height: 8px;
       position: relative;
       overflow: hidden;
       margin-top: 6px;
@@ -370,52 +601,21 @@
 
     .progress-bar-fill {
       height: 100%;
-      background: var(--accent-green);
+      background: var(--accent-emerald);
       width: 0%;
       transition: width 0.3s ease;
     }
 
-    .claims-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 16px;
-    }
-
-    .claim-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-
-    .claim-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    .claim-text {
-      font-size: 13.5px;
-      font-weight: 600;
-      margin: 8px 0;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
+    /* Modal styles */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(10, 13, 18, 0.9);
       z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(4px);
     }
 
     .pwa-prompt {
@@ -425,38 +625,38 @@
       transform: translateX(-50%);
       width: 90%;
       max-width: 400px;
-      background: rgba(18,18,26,0.95);
-      border: 1px solid var(--accent-green);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       z-index: 999;
       display: none;
-      animation: fadeInUp 0.4s ease;
     }
 
-    /* Media Console Styles */
+    /* Media Panels & Timelines */
     .console-tab-group {
       display: flex;
       border-bottom: 1px solid var(--border-color);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .console-tab {
-      padding: 8px 16px;
+      padding: 6px 12px;
       background: transparent;
       border: none;
       color: var(--text-secondary);
       font-family: inherit;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 11px;
       border-bottom: 2px solid transparent;
+      outline: none;
     }
 
     .console-tab.active {
-      color: var(--accent-green);
-      border-bottom-color: var(--accent-green);
+      color: var(--accent-emerald);
+      border-bottom-color: var(--accent-emerald);
     }
 
     .media-panel {
@@ -468,232 +668,486 @@
     }
 
     .timeline-container {
-      background: rgba(255,255,255,0.01);
+      background: var(--bg-dark);
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 12px;
-      max-height: 160px;
+      border-radius: 6px;
+      padding: 10px;
+      max-height: 140px;
       overflow-y: auto;
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     .timeline-item {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      font-size: 11.5px;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 11px;
     }
 
     .timeline-item:last-child { border-bottom: none; }
 
-    footer {
-      border-top: 1px solid var(--border-color);
-      padding: 30px 0;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 40px;
+    /* Interactive Ledger Feed */
+    .claims-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+    .claim-card {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.15s ease;
     }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translate(-50%, 20px); }
-      to { opacity: 1; transform: translate(-50%, 0); }
+
+    .claim-card:hover {
+      border-color: var(--border-focus);
+    }
+
+    .claim-text {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 8px 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Minimalist Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: var(--text-primary);
     }
   </style>
 </head>
 <body>
-  <div class="glow-bg"></div>
 
   <!-- Navbar -->
   <header>
-    <div class="logo-area">
-      <span class="logo-icon">⚡</span>
-      <div>
-        <span class="logo-text">CheckAM</span>
-        <span class="logo-slogan">Verify it</span>
+    <div class="container header-nav">
+      <a href="/" class="logo-area">
+        <span class="logo-icon">⚡</span>
+        <div>
+          <span class="logo-text">CheckAM</span>
+          <span class="logo-slogan">Verify it</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#audit-ledger">Ledger Feed</a>
+        <a href="#faq">FAQ</a>
+        <button id="auth-nav-btn" class="btn btn-secondary">Sign In</button>
       </div>
-    </div>
-    <div class="nav-links">
-      <a href="/" class="active">Dashboard</a>
-      <a href="/demo.html">Newspaper Demo</a>
-      <button id="auth-nav-btn" class="btn btn-secondary" style="padding: 6px 14px; font-size: 12px;">Sign In</button>
     </div>
   </header>
 
-  <div class="container">
-    
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-badge">Information Integrity Network</div>
-      <h1>Verify statements, in <span>real-time</span>.</h1>
-      <p>Decentralized community fact-checking overlay. Highlight statements to trigger live AI verification and sync audits dynamically.</p>
-      <div class="cta-group">
-        <a href="/demo.html" class="btn btn-primary">📖 Try Chrome Extension Demo</a>
-        <a href="#dashboard-anchor" id="explore-btn" class="btn btn-secondary">⚡ Open Live Portal</a>
-      </div>
-    </section>
-
-    <!-- USER AUTHENTICATED CONSOLE PANEL -->
-    <div id="dashboard-anchor"></div>
-    <section class="card" id="user-dashboard" style="display:none;">
-      <div class="profile-dashboard">
-        <!-- Account Status card -->
-        <div style="border-right: 1px solid var(--border-color); padding-right:20px;">
-          <div class="profile-avatar-row">
-            <div class="avatar" id="profile-initials">U</div>
-            <div>
-              <div id="profile-email" style="font-weight:700; font-size:14px; word-break:break-all;">user@example.com</div>
-              <div style="display:flex; align-items:center; margin-top:2px;">
-                <span id="tier-badge" class="tier-indicator">FREE ACCOUNT</span>
-                <span id="admin-badge" class="tier-indicator admin-badge" style="display:none;">ADMIN</span>
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-bottom:12px;">
-            <div style="display:flex; justify-content:space-between; font-size:12px;">
-              <span>Daily AI Audits</span>
-              <span id="audit-ratio">0 / 10 Used</span>
-            </div>
-            <div class="progress-bar-container">
-              <div class="progress-bar-fill" id="audit-progress"></div>
-            </div>
-          </div>
-
-          <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
-            <button id="paystack-upgrade-btn" class="btn btn-primary" style="font-size:11px; padding:8px 12px; justify-content:center; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:black; border:none; box-shadow:none;">
-              💳 Upgrade to Premium (2,500 NGN)
-            </button>
-            <button id="logout-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; justify-content:center; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);">
-              Sign Out
-            </button>
-          </div>
-        </div>
-
-        <!-- Premium Feature Sandbox -->
-        <div style="padding-left:10px;">
-          <!-- Locked Panel -->
-          <div id="premium-features-locked" style="text-align:center; padding:20px 0;">
-            <span style="font-size:30px;">🔒</span>
-            <h4 style="margin:8px 0; font-size:14px;">Premium Live Media Checker Locked</h4>
-            <p style="font-size:11px; color:var(--text-secondary);">Upgrade to Premium to check audio files, YouTube videos, and live speaker recordings.</p>
-          </div>
-
-          <!-- Active Panel -->
-          <div id="premium-features-active" style="display:none;">
-            <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
-              <span style="color:#fbbf24;">⭐</span>
-              <h4 style="font-size:13px; font-weight:700;">Live Video & Audio Fact-Checker</h4>
-            </div>
-
-            <!-- Panel Tabs -->
-            <div class="console-tab-group">
-              <button class="console-tab active" data-tab="mic-panel">🎤 Mic Stream</button>
-              <button class="console-tab" data-tab="upload-panel">📂 Upload File</button>
-              <button class="console-tab" data-tab="yt-panel">📺 YouTube URL</button>
-            </div>
-
-            <!-- Tab 1: Live Mic -->
-            <div class="media-panel active" id="mic-panel">
-              <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Speak into your microphone. CheckAM will transcribe and match statements.</p>
-              <button id="mic-btn" class="btn btn-primary" style="font-size:11px; padding:6px 12px; background:linear-gradient(135deg, var(--accent-purple), var(--accent-blue));">
-                🎤 Start Listening
-              </button>
-            </div>
-
-            <!-- Tab 2: Upload File -->
-            <div class="media-panel" id="upload-panel">
-              <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Upload a news video (.mp4) or audio speech file (.mp3/.wav).</p>
-              <input type="file" id="media-uploader" accept="audio/*,video/*" style="font-size:11px; color:var(--text-secondary); margin-bottom:8px; display:block;">
-              <button id="upload-audit-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px;">Start Media Audit</button>
-            </div>
-
-            <!-- Tab 3: YouTube URL -->
-            <div class="media-panel" id="yt-panel">
-              <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">Paste a broadcast, speech, or interview YouTube link.</p>
-              <div style="display:flex; gap:8px; margin-bottom:8px;">
-                <input type="text" id="yt-url" placeholder="https://www.youtube.com/watch?v=..." style="flex:1; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:6px; color:white; padding:4px 8px; font-size:11px; outline:none;">
-                <button id="yt-audit-btn" class="btn btn-secondary" style="font-size:11px; padding:4px 10px;">Audit Video</button>
-              </div>
-            </div>
-
-            <!-- Scrolling Timeline & Status info -->
-            <div id="media-status-text" style="font-size:10px; color:var(--text-secondary); margin-top:8px;">Status: Idle</div>
-            <div class="timeline-container" id="timeline-container">
-              <div style="text-align:center; color:var(--text-secondary); font-size:11px; padding-top:20px;">Verification timeline will load here during media playback.</div>
-            </div>
-            
-            <button id="pdf-report-btn" class="btn btn-secondary" style="font-size:11px; padding:6px 12px; width:100%; justify-content:center; margin-top:12px;">
-              📄 Generate Verified PDF Report
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Checker section -->
-    <section class="checker-section">
-      <div class="card">
-        <div class="card-title">🔍 Live Claim Auditor</div>
-        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
-          Paste a quote or news statement below to audit it against database nodes or query the Gemini AI search ground.
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <div>
+        <div class="hero-badge">⚡ AI-Powered Information Integrity</div>
+        <h1 class="hero-title">Truth deserves evidence.</h1>
+        <p class="hero-desc">
+          Combating misinformation across Africa. Highlight any public statement, speech, or broadcast online to instantly analyze facts with search-grounded AI, transparent reasoning, and decentralized community note review.
         </p>
-        <div class="search-box">
-          <input type="text" id="checker-input" placeholder="e.g. Nigeria's external reserves increased by $10 billion in the last six months.">
-          <button id="checker-btn">Audit Claim</button>
+        <div class="hero-cta">
+          <a href="/demo.html" class="btn btn-primary">📖 Try Chrome Extension Demo</a>
+          <a href="#audit-ledger" class="btn btn-secondary">Explore Verified Feed</a>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Browser mockup OR Active user Console -->
+      <div>
+        <!-- Default State: Browser mockup -->
+        <div class="browser-mockup" id="mockup-default-view">
+          <div class="browser-header">
+            <div class="browser-dot"></div>
+            <div class="browser-dot"></div>
+            <div class="browser-dot"></div>
+            <div class="browser-url">https://africannews.org/economy/policy-review</div>
+          </div>
+          <div class="browser-content">
+            <div class="mock-article-title">National Inflation Review & Reserves</div>
+            <p style="color: var(--text-secondary); margin-bottom: 12px;">
+              According to the latest treasury updates, macro fiscal projections look optimistic. The governor noted that <span class="mock-highlight" id="trigger-mock-fact">Nigeria's external reserves increased by $10 billion in the last six months</span> to offset currency volatilities.
+            </p>
+            
+            <!-- Hover details overlay -->
+            <div class="verification-overlay" id="mock-fact-overlay">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span class="status-badge" data-status="False">False</span>
+                <span style="font-size:9.5px; color:var(--text-secondary);">⚡ Checked by CheckAM</span>
+              </div>
+              <p style="font-size:11px; font-weight:600; margin-bottom:6px;">"Nigeria's external reserves increased by $10 billion..."</p>
+              <p style="font-size:10px; color:var(--text-secondary); margin-bottom:10px;">
+                Central Bank of Nigeria (CBN) data shows that external reserves fluctuated between $34 billion and $36 billion, indicating a net change of less than $2 billion.
+              </p>
+              <div style="border-top: 1px solid var(--border-color); padding-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:9px; color:var(--accent-emerald);">94% Agreement</span>
+                <span style="font-size:9px; color:var(--text-secondary);">2 Sources cited</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="result-panel" id="result-panel">
-          <div class="result-header">
-            <span style="font-weight: 700; font-size: 14px;">Audit Results</span>
+        <!-- Logged In State: Console (Hidden by default) -->
+        <div class="card" id="user-dashboard" style="display:none;">
+          <div class="profile-dashboard">
+            <!-- Left sub-card: User Info & limits -->
+            <div style="border-right: 1px solid var(--border-color); padding-right:16px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
+                <div class="avatar" id="profile-initials">U</div>
+                <div>
+                  <h4 style="font-size:13px; font-weight:700;" id="profile-email">user@email.com</h4>
+                  <span id="tier-badge" class="tier-indicator">FREE ACCOUNT</span>
+                  <span id="admin-badge" class="tier-indicator admin-badge" style="display:none;">ADMIN</span>
+                </div>
+              </div>
+              
+              <div style="margin-top:16px;">
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-secondary);">
+                  <span>Daily AI Audits</span>
+                  <span id="audit-ratio">0 / 10 Used</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="audit-progress"></div>
+                </div>
+              </div>
+              
+              <div style="display:flex; flex-direction:column; gap:8px; margin-top:20px;">
+                <button id="paystack-upgrade-btn" class="btn btn-primary" style="font-size:11px; padding:6px; justify-content:center; background:linear-gradient(135deg, #fbbf24, #f59e0b); color:black; border:none;">
+                  💳 Upgrade to Premium (2,500 NGN)
+                </button>
+                <button id="logout-btn" class="btn btn-secondary" style="font-size:11px; padding:6px; justify-content:center; color:#ef4444; border-color:rgba(239,68,68,0.2);">
+                  Sign Out
+                </button>
+              </div>
+            </div>
+
+            <!-- Right sub-card: Media Auditor -->
+            <div>
+              <div id="premium-features-locked" style="text-align:center; padding:24px 0;">
+                <span style="font-size:24px;">🔒</span>
+                <h4 style="margin:6px 0; font-size:13px; font-weight:700;">Live Media Checker Locked</h4>
+                <p style="font-size:10px; color:var(--text-secondary); line-height:1.4;">Upgrade to Premium to check audio files, YouTube videos, and live speaker recordings.</p>
+              </div>
+
+              <div id="premium-features-active" style="display:none;">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:8px;">
+                  <span style="color:#fbbf24; font-size:12px;">⭐</span>
+                  <h4 style="font-size:12px; font-weight:700;">Live Video & Audio Fact-Checker</h4>
+                </div>
+
+                <div class="console-tab-group">
+                  <button class="console-tab active" data-tab="mic-panel">🎤 Mic Stream</button>
+                  <button class="console-tab" data-tab="upload-panel">📂 Upload File</button>
+                  <button class="console-tab" data-tab="yt-panel">📺 YouTube URL</button>
+                </div>
+
+                <!-- Tab Panels -->
+                <div class="media-panel active" id="mic-panel">
+                  <p style="font-size:10px; color:var(--text-secondary); margin-bottom:8px;">Speak into your mic. CheckAM will transcribe and match statements.</p>
+                  <button id="mic-btn" class="btn btn-primary" style="font-size:10px; padding:4px 10px; background:linear-gradient(135deg, var(--accent-emerald), var(--accent-blue)); border:none; color:white;">
+                    🎤 Start Listening
+                  </button>
+                </div>
+
+                <div class="media-panel" id="upload-panel">
+                  <p style="font-size:10px; color:var(--text-secondary); margin-bottom:8px;">Upload a news video (.mp4) or audio speech file (.mp3/.wav).</p>
+                  <input type="file" id="media-uploader" accept="audio/*,video/*" style="font-size:10px; color:var(--text-secondary); margin-bottom:6px; display:block;">
+                  <button id="upload-audit-btn" class="btn btn-secondary" style="font-size:10px; padding:4px 10px;">Start Media Audit</button>
+                </div>
+
+                <div class="media-panel" id="yt-panel">
+                  <p style="font-size:10px; color:var(--text-secondary); margin-bottom:8px;">Paste a broadcast, speech, or interview YouTube link.</p>
+                  <div style="display:flex; gap:6px;">
+                    <input type="text" id="yt-url" placeholder="https://www.youtube.com/..." style="flex:1; background:var(--bg-dark); border:1px solid var(--border-color); border-radius:4px; color:white; padding:4px; font-size:10px; outline:none;">
+                    <button id="yt-audit-btn" class="btn btn-secondary" style="font-size:10px; padding:4px 8px;">Audit Video</button>
+                  </div>
+                </div>
+
+                <div id="media-status-text" style="font-size:9px; color:var(--text-secondary); margin-top:6px;">Status: Idle</div>
+                <div class="timeline-container" id="timeline-container">
+                  <div style="text-align:center; color:var(--text-muted); font-size:10px; padding-top:20px;">Timeline will synchronize during media playback.</div>
+                </div>
+                
+                <button id="pdf-report-btn" class="btn btn-secondary" style="font-size:10px; padding:5px; width:100%; justify-content:center; margin-top:8px;">
+                  📄 Generate Verified PDF Report
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- User Trust tags -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="trust-title">Building Truth Infrastructure For Africa</div>
+      <div class="trust-tags">
+        <span>📰 JOURNALISTS & REPORTERS</span>
+        <span>🔍 MY-VOTE OBSERVERS</span>
+        <span>📚 ACADEMIC RESEARCHERS</span>
+        <span>⚖️ PUBLIC CIVIL SOCIETIES</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Four-step Workflow -->
+  <section class="workflow-section" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2>The Verification Loop</h2>
+        <p>Transparency from raw highlight to public verdict</p>
+      </div>
+
+      <div class="workflow-timeline">
+        <div class="workflow-step">
+          <div class="workflow-num">1</div>
+          <h4>Highlight Statement</h4>
+          <p>Double-click or highlight any sentence on any news website or online feed to scan.</p>
+        </div>
+        <div class="workflow-step">
+          <div class="workflow-num">2</div>
+          <h4>AI Context Analysis</h4>
+          <p>Search-grounded Gemini AI pulls context and facts from live, official web repositories.</p>
+        </div>
+        <div class="workflow-step">
+          <div class="workflow-num">3</div>
+          <h4>Cite Direct Evidence</h4>
+          <p>The system compiles source citations and writes clear, objective explanations.</p>
+        </div>
+        <div class="workflow-step">
+          <div class="workflow-num">4</div>
+          <h4>Consensus Verdict</h4>
+          <p>Community peers rate check helpfulness, updating truth percentages in real-time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Six Feature Cards Grid -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Built for Accuracy and Trust</h2>
+        <p>Advanced tooling for combating information pollution</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Browser-Native Tooltip Overlay</h3>
+          <p>Highlight web text directly in Chrome to trigger verified overlay cards showing claims status and notes instantly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <h3>Google Search-Grounded AI</h3>
+          <p>Verifications are powered by Gemini with search-grounding, fetching live facts directly from verified official records.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h3>Decentralized Community Notes</h3>
+          <p>Like X Community Notes, users vote on notes helpfulness to adjust rating scores without central censors.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Media & Audio Transcription</h3>
+          <p>Upload video recordings or transcribe speech audio streams dynamically, generating synchronized audit timelines.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>standalone Mobile PWA</h3>
+          <p>Save CheckAM directly to your iOS or Android home screen for instant fact checks on your mobile device.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💳</div>
+          <h3>Flexible Paystack Subscriptions</h3>
+          <p>Upgrade to premium tiers seamlessly using Paystack checkout checkouts to bypass daily audit limits.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Search / Auditor -->
+  <section class="features-section" style="background: rgba(22, 27, 34, 0.25);">
+    <div class="container" style="max-width:800px;">
+      <div class="section-header">
+        <h2>Interactive Auditor Console</h2>
+        <p>Test a statement against our live verification engine</p>
+      </div>
+      
+      <div class="card" style="border-style: dashed; border-color: var(--border-focus);">
+        <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+          Type any claim or click one of these presets to test:
+          <span style="color:var(--accent-emerald); cursor:pointer; text-decoration:underline;" onclick="document.getElementById('checker-input').value = 'Nigeria\'s inflation rate dropped to 12% in the second quarter.';">Inflation dropped to 12%</span> |
+          <span style="color:var(--accent-emerald); cursor:pointer; text-decoration:underline;" onclick="document.getElementById('checker-input').value = 'The 700-kilometer Lagos-Calabar coastal highway has been completely paved and commissioned.';">Lagos-Calabar highway paved</span>
+        </p>
+        <div style="display:flex; gap:10px; background:var(--bg-dark); border:1px solid var(--border-color); border-radius:6px; padding:4px;">
+          <input type="text" id="checker-input" placeholder="Paste statement here..." style="flex:1; background:transparent; border:none; outline:none; color:white; padding:8px; font-size:13px; font-family:inherit;">
+          <button id="checker-btn" class="btn btn-primary">Audit Claim</button>
+        </div>
+
+        <div id="result-panel" style="display:none; margin-top:20px; border-top:1px solid var(--border-color); padding-top:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <span style="font-size:12px; font-weight:700;">Audit Verdict</span>
             <span class="status-badge" id="result-status" data-status="False">False</span>
           </div>
-          <div class="result-explanation" id="result-explanation">
-            Explanation...
-          </div>
-          <div style="font-size: 11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; margin-bottom:4px; letter-spacing:0.5px;">Sources Citations</div>
-          <div id="result-sources"></div>
+          <p id="result-explanation" style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;"></p>
+          <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px;">Sources Citations</div>
+          <div id="result-sources" style="display:flex; flex-direction:column; gap:6px;"></div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Live database feed -->
-    <section style="margin-bottom: 60px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <h2 style="font-size:18px; font-weight:700;">Verified Claims Ledger</h2>
-        <span style="font-size:11px; color:var(--accent-green); font-weight:600; display:flex; align-items:center; gap:6px;">
-          <span style="width:6px; height:6px; border-radius:50%; background:var(--accent-green); display:inline-block;"></span>
-          Live Supabase feed
-        </span>
+  <!-- Live database feed -->
+  <section class="features-section" id="audit-ledger">
+    <div class="container">
+      <div class="section-header">
+        <h2>Verified Claims Ledger</h2>
+        <p>Live feed synchronizing with the decentralized Supabase database</p>
       </div>
       <div class="claims-grid" id="claims-grid">
-        <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-secondary);">Connecting to database...</div>
+        <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">Connecting to database...</div>
       </div>
-    </section>
+    </div>
+  </section>
 
-  </div>
+  <!-- Testimonials -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>What Integrity Leaders Say</h2>
+        <p>Trusted by professionals tracking truth</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-quote">
+            "During the election cycle, verifying campaign speeches instantly was critical. CheckAM gave our observers the tools to check speech highlights in real-time."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">FA</div>
+            <div class="author-info">
+              <h5>Funmi Adebayo</h5>
+              <span>Democracy Watch Nigeria</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-quote">
+            "The browser-native overlay lets me audit online policy papers without changing tabs. It brings academic fact-checking into our day-to-day workflow."
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">KO</div>
+            <div class="author-info">
+              <h5>Dr. Ken Okoye</h5>
+              <span>African Media Research Group</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <h2>Frequently Asked Questions</h2>
+        <p>Answers to common questions about CheckAM</p>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-question">How does the real-time AI fact-checking work? <span style="font-size:12px; color:var(--text-secondary);">+</span></div>
+          <div class="faq-answer">
+            CheckAM uses Google Gemini's Search-Grounded AI. When you submit a statement, the system initiates a real-time search query on official databases, government statistics, and reputable news outlets to verify facts and output citations.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">What are the daily audit limits on free accounts? <span style="font-size:12px; color:var(--text-secondary);">+</span></div>
+          <div class="faq-answer">
+            Free tier accounts are limited to 10 live AI search queries per day. Database ledger searches are always unlimited. You can upgrade to premium anytime to unlock unlimited live AI audits.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-question">How are community notes consensus ratings decided? <span style="font-size:12px; color:var(--text-secondary);">+</span></div>
+          <div class="faq-answer">
+            Any registered user can rate notes as "Helpful" or "Not Helpful". The consensus rating is calculated from these scores, requiring broad agreement to mark statements as verified.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Minimalist Footer -->
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <span style="font-weight:700; color:var(--text-primary);">CheckAM</span> | Verify it
+      </div>
+      <div class="footer-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div>
+        CheckAM Platform © 2026. Built with Node.js, WebSockets, Supabase, and Google Gemini API.
+      </div>
+    </div>
+  </footer>
 
   <!-- AUTH MODAL -->
   <div class="modal-overlay" id="auth-overlay">
-    <div class="card" style="width:100%; max-width:360px; position:relative;">
+    <div class="card" style="width:100%; max-width:360px; position:relative; background: var(--surface-elevated); border: 1px solid var(--border-color);">
       <button id="close-modal-btn" style="position:absolute; top:12px; right:16px; background:transparent; border:none; color:white; font-size:20px; cursor:pointer;">&times;</button>
-      <h3 style="font-size:18px; font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:8px;">⚡ Sign In to CheckAM</h3>
+      <h3 style="font-size:16px; font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:8px;">⚡ Sign In to CheckAM</h3>
       <p style="font-size:11px; color:var(--text-secondary); margin-bottom:16px;">Sign up or log in to track daily audits and access premium toolsets.</p>
       
       <div style="margin-bottom:12px;">
         <label style="display:block; font-size:11px; font-weight:700; margin-bottom:4px; color:var(--text-secondary);">Email</label>
-        <input type="email" id="auth-email" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:rgba(255,255,255,0.02); color:white; font-family:inherit; outline:none; font-size:13px;" placeholder="you@example.com">
+        <input type="email" id="auth-email" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-dark); color:white; font-family:inherit; outline:none; font-size:13px;" placeholder="you@example.com">
       </div>
       
       <div style="margin-bottom:16px;">
         <label style="display:block; font-size:11px; font-weight:700; margin-bottom:4px; color:var(--text-secondary);">Password</label>
-        <input type="password" id="auth-password" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:rgba(255,255,255,0.02); color:white; font-family:inherit; outline:none; font-size:13px;" placeholder="At least 6 chars">
+        <input type="password" id="auth-password" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid var(--border-color); background:var(--bg-dark); color:white; font-family:inherit; outline:none; font-size:13px;" placeholder="At least 6 chars">
       </div>
       
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
@@ -712,14 +1166,10 @@
       </div>
       <button id="close-pwa-btn" style="background:transparent; border:none; color:white; font-size:16px; cursor:pointer;">&times;</button>
     </div>
-    <p style="font-size:11.5px; color:var(--text-secondary); margin-bottom:10px;">Install the app on your phone/tablet for instant mobile fact-checking.</p>
-    <div id="install-instructions" style="font-size:11px; font-weight:700; color:var(--accent-green); margin-bottom:8px;"></div>
+    <p style="font-size:11px; color:var(--text-secondary); margin-bottom:10px;">Install the app on your phone/tablet for instant mobile fact-checking.</p>
+    <div id="install-instructions" style="font-size:10px; font-weight:700; color:var(--accent-emerald); margin-bottom:8px;"></div>
     <button id="install-pwa-btn" class="btn btn-primary" style="width:100%; justify-content:center; padding:6px; font-size:11px; display:none;">Install App</button>
   </div>
-
-  <footer>
-    <p>CheckAM Platform © 2026. Built with Node.js, WebSockets, Supabase, and Google Gemini API.</p>
-  </footer>
 
   <!-- SCRIPT INTEGRATIONS -->
   <script>
@@ -931,15 +1381,26 @@
     }
 
     function updateAuthUI(isLoggedIn) {
+      const defaultMockup = document.getElementById('mockup-default-view');
+      const userDashboard = document.getElementById('user-dashboard');
+
       if (isLoggedIn && currentUser) {
-        authNavBtn.innerText = 'Open Dashboard';
-        document.getElementById('user-dashboard').style.display = 'block';
+        authNavBtn.innerText = 'Open Console';
+        
+        // Switch mockup for the active working dashboard console
+        defaultMockup.style.display = 'none';
+        userDashboard.style.display = 'block';
+        
         document.getElementById('profile-email').innerText = currentUser.email;
         document.getElementById('profile-initials').innerText = currentUser.email.charAt(0).toUpperCase();
         updateDashboardView();
       } else {
         authNavBtn.innerText = 'Sign In';
-        document.getElementById('user-dashboard').style.display = 'none';
+        
+        // Show mockup, hide active dashboard
+        defaultMockup.style.display = 'block';
+        userDashboard.style.display = 'none';
+        
         updateRateLimitVisuals();
       }
     }
@@ -984,12 +1445,12 @@
 
       if (isPremium) {
         fill.style.width = '100%';
-        fill.style.background = 'linear-gradient(135deg, var(--accent-purple), var(--accent-blue))';
+        fill.style.background = 'linear-gradient(135deg, var(--accent-emerald), var(--accent-blue))';
         ratio.innerText = 'Unlimited AI Audits Active';
       } else {
         const percent = Math.min((dailyAuditCount / 10) * 100, 100);
         fill.style.width = `${percent}%`;
-        fill.style.background = 'var(--accent-green)';
+        fill.style.background = 'var(--accent-emerald)';
         ratio.innerText = `${dailyAuditCount} / 10 Used`;
       }
     }
@@ -1095,7 +1556,7 @@
           resultExplanation.innerText = claim.explanation;
 
           resultSources.innerHTML = claim.citations && claim.citations.length > 0
-            ? claim.citations.map(c => `<a href="${c.url}" target="_blank" class="result-source-link">🔗 ${c.title}</a>`).join('')
+            ? claim.citations.map(c => `<a href="${c.url}" target="_blank" style="font-size:11px; color:var(--accent-emerald); text-decoration:none;">🔗 ${c.title}</a>`).join('')
             : '<div style="font-size:11px;color:#9ca3af;">No official sources linked.</div>';
 
           resultPanel.style.display = 'block';
@@ -1132,16 +1593,16 @@
               <div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                   <span class="status-badge" data-status="${c.status}">${c.status}</span>
-                  <span style="font-size:10px; color:var(--text-secondary);">${c.id.startsWith('ai_') ? '🤖 AI Verified' : '📝 Database'}</span>
+                  <span style="font-size:9.5px; color:var(--text-secondary);">${c.id.startsWith('ai_') ? '🤖 AI Verified' : '📝 Database'}</span>
                 </div>
                 <div class="claim-text">${c.claim}</div>
                 <p style="font-size:11.5px; color:var(--text-secondary); line-height:1.4; display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
                   ${c.explanation}
                 </p>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid rgba(255,255,255,0.05); padding-top:10px;">
-                <span style="font-size:10.5px; color:var(--text-secondary);">Consensus</span>
-                <span style="font-weight:700; color:var(--accent-green); font-size:11.5px;">${c.consensus}% Agreement</span>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; border-top:1px solid var(--border-color); padding-top:10px;">
+                <span style="font-size:10px; color:var(--text-secondary);">Consensus</span>
+                <span style="font-weight:700; color:var(--accent-emerald); font-size:11px;">${c.consensus}% Agreement</span>
               </div>
             </div>
           `;
@@ -1202,7 +1663,7 @@
           
           if (index === timelineData.length - 1) {
             mediaStatus.innerText = 'Status: Audits complete.';
-            mediaStatus.style.color = 'var(--accent-green)';
+            mediaStatus.style.color = 'var(--accent-emerald)';
             // Feed trigger in auditor search bar
             checkerInput.value = item.text.replace(/"/g, '');
             checkerBtn.click();
@@ -1243,7 +1704,7 @@
 
       recognition.onstart = () => {
         mediaStatus.innerText = 'Status: Listening... Say "subsidy", "reserve", or "inflation".';
-        mediaStatus.style.color = 'var(--accent-green)';
+        mediaStatus.style.color = 'var(--accent-emerald)';
         timelineContainer.innerHTML = '';
       };
 
@@ -1331,6 +1792,27 @@
         </html>
       `);
       newWindow.document.close();
+    });
+
+    // Interactive mockup highlight click
+    document.getElementById('trigger-mock-fact').addEventListener('click', () => {
+      const overlay = document.getElementById('mock-fact-overlay');
+      overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Accordion FAQ Action
+    document.querySelectorAll('.faq-question').forEach(item => {
+      item.addEventListener('click', () => {
+        const answer = item.nextElementSibling;
+        const toggleSpan = item.querySelector('span');
+        if (answer.style.display === 'block') {
+          answer.style.display = 'none';
+          toggleSpan.innerText = '+';
+        } else {
+          answer.style.display = 'block';
+          toggleSpan.innerText = '-';
+        }
+      });
     });
   </script>
 </body>
